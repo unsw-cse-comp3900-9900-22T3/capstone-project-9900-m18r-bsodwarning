@@ -1,20 +1,18 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Button from '@mui/material/Button';
-import CameraIcon from '@mui/icons-material/PhotoCamera';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import RecipeCard from '../components/RecipeCard';
+import HomeTopBar from '../components/HomeTopBar';
+import Stack from '@mui/material/Stack';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Divider from '@mui/material/Divider';
+import Pagination from '@mui/material/Pagination';
 
 function Copyright() {
   return (
@@ -42,54 +40,82 @@ const theme = createTheme(
   }
 );
 
+const style = {
+  width: '100%',
+  maxWidth: 360,
+  bgcolor: 'background.paper',
+};
+
+const LeftBar = () => {
+  return (
+    <List sx={style} component="nav" aria-label="mailbox folders">
+      <Divider />
+      <ListItem button>
+        <ListItemText primary="1" />
+      </ListItem>
+      <Divider />
+      <ListItem button divider>
+        <ListItemText primary="2" />
+      </ListItem>
+      <ListItem button>
+        <ListItemText primary="3" />
+      </ListItem>
+      <Divider light />
+      <ListItem button>
+        <ListItemText primary="4" />
+      </ListItem>
+      <Divider />
+    </List>
+  )
+}
+
+const BOARD = () => {
+  const [page, setPage] = React.useState(1);
+  const handleChange = (event, value) => {
+    setPage(value);
+  };
+
+  return (
+    <Stack spacing={2}>
+      <Typography>Page: {page}</Typography>
+      <img
+      src='https://source.unsplash.com/random'
+      height={200}
+      alt={'123'}
+      />
+      <Pagination count={4} page={page} onChange={handleChange} />
+    </Stack>
+  );
+}
+
 export default function Album() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppBar position="relative" color="neutral">
-        <Toolbar>
-          <Typography variant="h6" color="inherit" noWrap>
-            Cook
-          </Typography>
-        </Toolbar>
-      </AppBar>
+      <HomeTopBar />
       <main>
         {/* Hero unit */}
-        <Container sx={{ py: 8 }} maxWidth="md">
+        <Stack sx={ {py:4, px:4} } direction="row" spacing={2} maxWidth="md">
           {/* End hero unit */}
-          <Grid container spacing={4}>
+          <Grid container xs={3}>
+            <LeftBar />
+          </Grid>
+          <Grid container spacing={2} xs={12}>
+            {/* BOARD */}
+            <Grid xs={12}>
+              <BOARD />
+            </Grid>
+            {/* BOARD */}
             {cards.map((card) => (
               <Grid item key={card} xs={12} sm={6} md={4}>
-                <Card
-                  sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                >
-                  <CardMedia
-                    component="img"
-                    sx={{
-                      // 16:9
-                      pt: '56.25%',
-                    }}
-                    image="https://source.unsplash.com/random"
-                    alt="random"
-                  />
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      Heading
-                    </Typography>
-                    <Typography>
-                      This is a media card. You can use this section to describe the
-                      content.
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button size="small">View</Button>
-                    <Button size="small">Edit</Button>
-                  </CardActions>
-                </Card>
+                <RecipeCard />
               </Grid>
             ))}
           </Grid>
-        </Container>
+          <Grid container xs={2}>
+            123
+          </Grid>
+        </Stack>
       </main>
       {/* Footer */}
       <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
