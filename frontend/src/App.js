@@ -7,6 +7,8 @@ import {
   Route,
 } from 'react-router-dom';
 import Home from './pages/Home';
+import { Box } from '@mui/system';
+import RecipeEdit from './pages/RecipeEdit';
 
 const Index = () => {
   return <>
@@ -14,6 +16,7 @@ const Index = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />}></Route>
+          <Route path="/" element={<RecipeEdit />}></Route>
         </Routes>
       </BrowserRouter>
     </React.Fragment>
@@ -21,11 +24,12 @@ const Index = () => {
 }
 
 function App() {
-  return <>
+
+  return <Box>
     <SnackbarProvider maxSnack={3}>
-      <Index />
+      <Index/>
     </SnackbarProvider>
-  </>
+  </Box>
 }
 
 export default App;

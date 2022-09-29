@@ -1,124 +1,250 @@
 import * as React from 'react';
-import CssBaseline from '@mui/material/CssBaseline';
-import Grid from '@mui/material/Grid';
+import { styled, alpha } from '@mui/material/styles';
+import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Link from '@mui/material/Link';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import InputBase from '@mui/material/InputBase';
+import SearchIcon from '@mui/icons-material/Search';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import Avatar from '@mui/material/Avatar';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import RecipeCard from '../components/RecipeCard';
-import HomeTopBar from '../components/HomeTopBar';
-import Stack from '@mui/material/Stack';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
+import { Grid } from '@mui/material';
+import Chip from '@mui/material/Chip';
+import Link from '@mui/material/Link';
 import Divider from '@mui/material/Divider';
-import Pagination from '@mui/material/Pagination';
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+const Header = () => {
+  const Search = styled('div')(({ theme }) => ({
+    position: 'relative',
 
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-const theme = createTheme(
-  {
-    palette: {
-      neutral: {
-        main: '#64748B',
-        contrastText: '#fff',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: alpha(theme.palette.common.white, 0.15),
+    '&:hover': {
+      backgroundColor: alpha(theme.palette.common.white, 0.25),
+    },
+    marginLeft: 0,
+    marginRight:'2em',
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(1),
+      width: 'auto',
+    },
+  }));
+  
+  const SearchIconWrapper = styled('div')(({ theme }) => ({
+    padding: theme.spacing(0, 1),
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }));
+  
+  const StyledInputBase = styled(InputBase)(({ theme }) => ({
+    color: 'inherit',
+    '& .MuiInputBase-input': {
+      padding: theme.spacing(1, 1, 1, 0),
+      // vertical padding + font size from searchIcon
+      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+      transition: theme.transitions.create('width'),
+      width: '100%',
+      [theme.breakpoints.up('sm')]: {
+        width: '18ch',
+        '&:focus': {
+          width: '30ch',
+        },
       },
-    }
-  }
-);
+    },
+  }));
 
-const style = {
-  width: '100%',
-  maxWidth: 360,
-  bgcolor: 'background.paper',
-};
+  const settings = ['Log in','Sign in'];
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
 
-const LeftBar = () => {
-  return (
-    <List sx={style} component="nav" aria-label="mailbox folders">
-      <Divider />
-      <ListItem button>
-        <ListItemText primary="1" />
-      </ListItem>
-      <Divider />
-      <ListItem button divider>
-        <ListItemText primary="2" />
-      </ListItem>
-      <ListItem button>
-        <ListItemText primary="3" />
-      </ListItem>
-      <Divider light />
-      <ListItem button>
-        <ListItemText primary="4" />
-      </ListItem>
-      <Divider />
-    </List>
-  )
-}
-
-const BOARD = () => {
-  const [page, setPage] = React.useState(1);
-  const handleChange = (event, value) => {
-    setPage(value);
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
   };
 
-  return (
-    <Stack spacing={2}>
-      <Typography>Page: {page}</Typography>
-      <img
-      src='https://source.unsplash.com/random'
-      height={200}
-      alt={'123'}
-      />
-      <Pagination count={4} page={page} onChange={handleChange} />
-    </Stack>
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  return(
+    <Box sx={{ flexGrow: 1, position: 'fixed', left:0, right:0, top:0, zIndex:1 }}>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+          >
+            Tasty studio
+          </Typography>
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder= 'search'
+              inputProps={{ 'aria-label': 'search' }}
+            />
+          </Search>
+          
+          <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {settings.map((setting) => (
+                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">{setting}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+        </Toolbar>
+      </AppBar>
+    </Box>
   );
 }
 
-export default function Album() {
+const Advertisement = () => {
+  const wdt = document.documentElement.clientWidth * 0.4 + 'px';
+  const StyledImg = styled('img')(({theme}) => ({
+    width:'57%',
+    height:wdt,
+    objectFit:'cover'
+  }));
+  const StyledBox = styled(Box)(({theme}) => ({
+    width:'43%',
+  }))
+  const this_style = ({
+    display:'flex',
+    flexdirection:'row',
+  })
+  return(
+    <Box style={this_style}>
+      <StyledImg
+      src='https://source.unsplash.com/random'
+      alt='nothing'
+      />
+      <StyledBox display="flex" justifyContent="center" alignItems="center">
+        <Typography variant="overline" fontSize={20}>
+        Cooking with Elegance<br/>Join us!
+        </Typography>
+      </StyledBox>
+    </Box>
+  );
+}
+
+const RecipeDisplay = () => {
+  const cardlist = [1,1,1,1,1,1,1,1,1,1,1,1,1,1]
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <HomeTopBar />
-      <main>
-        {/* Hero unit */}
-        <Stack sx={ {py:4, px:4} } direction="row" spacing={2} maxWidth="md">
-          {/* End hero unit */}
-          <Grid container xs={3}>
-            <LeftBar />
+    <Box sx={{ flexGrow:1, margin:6 }} display="flex" justifyContent="center" alignItems="center">
+      <Grid container spacing={2} width={1100} >
+        <Grid item xs={12}>
+          <Typography variant='h3' display="flex" justifyContent="center" alignItems="center">What do you want to cook?</Typography>
+        </Grid>
+        <Grid item xs={3}></Grid>
+        <Grid container xs={6} display="flex" justifyContent="space-around" alignItems="center" spacing={2}>
+          <Grid item xs={3}>
+            <Chip  color="primary" label='#beef' clickable/>
           </Grid>
-          <Grid container spacing={2} xs={12}>
-            {/* BOARD */}
-            <Grid xs={12}>
-              <BOARD />
-            </Grid>
-            {/* BOARD */}
-            {cards.map((card) => (
-              <Grid item key={card} xs={12} sm={6} md={4}>
-                <RecipeCard />
-              </Grid>
-            ))}
+          <Grid item xs={3}>
+            <Chip  color="primary" label='#beef' clickable/>
           </Grid>
-          <Grid container xs={2}>
-            123
+          <Grid item xs={3}>
+            <Chip  color="primary" label='#beef' clickable/>
           </Grid>
-        </Stack>
-      </main>
-      {/* Footer */}
-      <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
+          <Grid item xs={3}>
+            <Chip  color="primary" label='#beef' clickable/>
+          </Grid>
+          <Grid item xs={3}>
+            <Chip  color="primary" label='#beef' clickable/>
+          </Grid>
+          <Grid item xs={3}>
+            <Chip  color="primary" label='#beef' clickable/>
+          </Grid>
+          <Grid item xs={3}>
+            <Chip  color="primary" label='#beef' clickable/>
+          </Grid>
+        </Grid>
+        <Grid item xs={3}></Grid>
+        {cardlist.map((info, index) => (
+          <Grid item xs={4} key={index}>
+            <RecipeCard/>
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
+  );
+}
+
+const BottomInfo = () => {
+  return (
+    <Grid
+      container
+      spacing={2}
+      marginLeft='15vw'
+      marginRight='15vw'
+      sx={{ width:'70vw'}}
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+    >
+      <Grid item>Contact us</Grid>
+      <Divider orientation="vertical" flexItem/>
+      <Grid item>Join us</Grid>
+      <Divider orientation="vertical" flexItem/>
+      <Grid item>Become a partner</Grid>
+    </Grid>
+  );
+}
+
+export default function Home() {
+  function Copyright() {
+    return (
+      <Typography variant="body2" color="text.secondary" align="center">
+        {'Copyright © '}
+        <Link color="inherit" href="https://mui.com/">
+          Your Website
+        </Link>{' '}
+        {new Date().getFullYear()}
+        {'.'}
+      </Typography>
+    );
+  }
+  return <>
+  {/* Top */}
+  <Header/>
+  {/* main */}
+  <Advertisement/>
+  <RecipeDisplay />
+  <BottomInfo />
+  {/* Footer */}
+  <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
         <Typography variant="h6" align="center" gutterBottom>
           Footer
         </Typography>
@@ -133,6 +259,5 @@ export default function Album() {
         <Copyright />
       </Box>
       {/* End footer */}
-    </ThemeProvider>
-  );
+  </>
 }
