@@ -9,6 +9,9 @@ import {
 import Home from './pages/Home';
 import { Box } from '@mui/system';
 import RecipeEdit from './pages/RecipeEdit';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import RecipeDetail from './pages/RecipeDetail';
 
 const Index = () => {
   return <>
@@ -16,7 +19,10 @@ const Index = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />}></Route>
-          <Route path="/" element={<RecipeEdit />}></Route>
+          <Route path="/RecipeEdit" element={<RecipeEdit />}></Route>
+          <Route path="/Login" element={<Login />}></Route>
+          <Route path="/Signup" element={<Signup />}></Route>
+          <Route path="/RecipeDetail" element={<RecipeDetail />}></Route>
         </Routes>
       </BrowserRouter>
     </React.Fragment>

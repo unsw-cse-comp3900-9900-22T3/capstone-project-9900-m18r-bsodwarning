@@ -18,6 +18,7 @@ import Link from '@mui/material/Link';
 import Divider from '@mui/material/Divider';
 import { useNavigate } from 'react-router-dom';
 
+
 const Header = () => {
   const navigate = useNavigate();
   const Search = styled('div')(({ theme }) => ({
@@ -131,134 +132,19 @@ const Header = () => {
     </Box>
   );
 }
-
-const Advertisement = () => {
-  const wdt = document.documentElement.clientWidth * 0.4 + 'px';
-  const StyledImg = styled('img')(({theme}) => ({
-    width:'57vw',
-    height:wdt,
-    objectFit:'cover'
-  }));
-  const StyledBox = styled(Box)(({theme}) => ({
-    width:'43vw',
-  }))
-  const this_style = ({
-    display:'flex',
-    flexdirection:'row',
-    marginTop:'64px'
-  })
+const RecipeTittle = () => {
+  
   return(
-    <Box style={this_style}>
-      <StyledImg
-      src='https://source.unsplash.com/random'
-      alt='nothing'
-      />
-      <StyledBox display="flex" justifyContent="center" alignItems="center">
-        <Typography variant="overline" fontSize={20}>
-        Cooking with Elegance<br/>Join us!
-        </Typography>
-      </StyledBox>
+    <Box sx={{ marginTop:'64px'}}>
+      {'123'}
     </Box>
   );
 }
 
-const RecipeDisplay = () => {
-  const cardlist = [1,1,1,1,1,1,1,1,1,1,1,1]
-  return (
-    <Box sx={{ flexGrow:1, margin:6 }} display="flex" justifyContent="center" alignItems="center">
-      <Grid container spacing={2} width={1100} >
-        <Grid item xs={12}>
-          <Typography variant='h3' display="flex" justifyContent="center" alignItems="center">What do you want to cook?</Typography>
-        </Grid>
-        <Grid container display="flex" justifyContent="space-around" alignItems="center" spacing={2} sx={{marginLeft:'25vw', marginRight:'2 5vw'}}>
-          <Grid item xs={3}>
-            <Chip  color="primary" label='#beef' clickable/>
-          </Grid>
-          <Grid item xs={3}>
-            <Chip  color="primary" label='#beef' clickable/>
-          </Grid>
-          <Grid item xs={3}>
-            <Chip  color="primary" label='#beef' clickable/>
-          </Grid>
-          <Grid item xs={3}>
-            <Chip  color="primary" label='#beef' clickable/>
-          </Grid>
-          <Grid item xs={3}>
-            <Chip  color="primary" label='#beef' clickable/>
-          </Grid>
-          <Grid item xs={3}>
-            <Chip  color="primary" label='#beef' clickable/>
-          </Grid>
-          <Grid item xs={3}>
-            <Chip  color="primary" label='#beef' clickable/>
-          </Grid>
-        </Grid>
-        {cardlist.map((info, index) => (
-          <Grid item xs={4} key={index}>
-            <RecipeCard/>
-          </Grid>
-        ))}
-      </Grid>
-    </Box>
-  );
-}
+export default function RecipeDetail() {
 
-const BottomInfo = () => {
-  return (
-    <Grid
-      container
-      spacing={2}
-      marginLeft='15vw'
-      marginRight='15vw'
-      sx={{ width:'70vw'}}
-      display="flex"
-      justifyContent="space-between"
-      alignItems="center"
-    >
-      <Grid item>Contact us</Grid>
-      <Divider orientation="vertical" flexItem/>
-      <Grid item>Join us</Grid>
-      <Divider orientation="vertical" flexItem/>
-      <Grid item>Become a partner</Grid>
-    </Grid>
-  );
-}
-
-export default function Home() {
-  function Copyright() {
-    return (
-      <Typography variant="body2" color="text.secondary" align="center">
-        {'Copyright © '}
-        <Link color="inherit" href="https://mui.com/">
-          Your Website
-        </Link>{' '}
-        {new Date().getFullYear()}
-        {'.'}
-      </Typography>
-    );
-  }
-  return <>
-  {/* Top */}
+  return(<>
   <Header/>
-  {/* main */}
-  <Advertisement/>
-  <RecipeDisplay />
-  <BottomInfo />
-  {/* Footer */}
-  <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          color="text.secondary"
-          component="p"
-        >
-          Something here to give the footer a purpose!
-        </Typography>
-        <Copyright />
-      </Box>
-      {/* End footer */}
-  </>
+  <RecipeTittle/>
+  </>);
 }
