@@ -13,10 +13,20 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-import { Button, Chip, Grid, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+import { Button, ButtonGroup, Chip, Grid, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import { Stack } from '@mui/system';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import PropTypes from 'prop-types';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import TextField from '@mui/material/TextField';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -78,6 +88,7 @@ const Header = () => {
     <Box sx={{ flexGrow: 1, position: 'fixed', left:0, right:0, top:0, zIndex:1 }}>
       <AppBar position="static">
         <Toolbar>
+          <Button startIcon={<ArrowBackIosNewIcon color='disabled'/>} onClick={()=>{navigate('/')}}/>
           <Typography
             variant="h6"
             noWrap
@@ -86,7 +97,7 @@ const Header = () => {
           >
             Tasty studio
           </Typography>
-          <Search>
+          <Search component='form'>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
@@ -119,10 +130,10 @@ const Header = () => {
               onClose={handleCloseUserMenu}
             >
             <MenuItem onClick={() => handleCloseUserMenu}>
-              <Typography textAlign="center" onClick={()=>{navigate('Login')}}>{'Log in'}</Typography>
+              <Typography textAlign="center" onClick={()=>{navigate('/Login')}}>Log in</Typography>
             </MenuItem>
             <MenuItem onClick={() => handleCloseUserMenu}>
-              <Typography textAlign="center" onClick={()=>{navigate('Signup')}}>{'Sign in'}</Typography>
+              <Typography textAlign="center" onClick={()=>{navigate('/Signup')}}>Sign in</Typography>
             </MenuItem>
             </Menu>
           </Box>
@@ -131,7 +142,26 @@ const Header = () => {
     </Box>
   );
 }
+
 const RecipeContent = ( {info} ) => {
+  const [LikeState, setLike] = React.useState([false,123])
+  const handleLike = () => {
+    LikeState[0]
+    ? setLike([!LikeState[0],LikeState[1]-1])
+    : setLike([!LikeState[0],LikeState[1]+1])
+  }
+  const [SubcribState, setSubcrib] = React.useState(false)
+  const handleSubcrib = () => {
+    setSubcrib(!SubcribState)
+  }
+  const [value, setValue] = React.useState(0)
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  }
+  const [markState, setMark] = React.useState(false)
+  const handleMark = () => {
+    setMark(!markState)
+  }
   const tags = ['beef', 'tomato', 'sauce', 'tomato', 'sauce', 'sauce', 'tomato', 'sauce', 'tomato', 'sauce', 'tomato', 'sauce']
   const Ingredients = [
     {'name':'xxx spoon', 'type': 'Ingredients1', 'calories': '100'},
@@ -148,13 +178,6 @@ const RecipeContent = ( {info} ) => {
     {'img':'https://source.unsplash.com/random', 'Description':' this is Description of step 1'},
     {'img':'https://source.unsplash.com/random', 'Description':' this is Description of step 2'}
   ]
-  const StyledImg = styled('img')(({theme}) => ({
-    width:'94px',
-    height:'94px',
-    objectFit:'cover',
-    borderRadius:'27px',
-    marginRight:'54px'
-  }));
   const Tittleimg= styled('img')(({theme})=>({
     width:'685px',
     height:'378px',
@@ -165,22 +188,75 @@ const RecipeContent = ( {info} ) => {
     height:'260px',
     borderRadius:'10px'
   }))
+  function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+  
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box sx={{ p: 3 }}>
+            {children}
+          </Box>
+        )}
+      </div>
+    );
+  }
+  TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
+  };
+  function a11yProps(index) {
+    return {
+      id: `simple-tab-${index}`,
+      'aria-controls': `simple-tabpanel-${index}`,
+    };
+  }
+  const Recommendation = [
+    {'img':'https://source.unsplash.com/random', 'Description':' this is Description of Recommendation 1'},
+    {'img':'https://source.unsplash.com/random', 'Description':' this is Description of Recommendation 2'}
+  ]
+  const [comments,setComment] = React.useState([
+    {'user':'laurance', 'comment':'I like this'},
+    {'user':'Bian shengtao', 'comment':'not bad'},
+  ])
+  const handleSubmit = (e) => {
+    const newComment = [...comments,{'user':'me', 'comment': e.target.value}]
+    if (e.keyCode === 13){
+      setComment(newComment)
+    }
+  }
   return(
     <Box display="flex" justifyContent="center" alignItems="center" sx={{ marginTop:'64px', width:'100%'}}>
-      <Grid container spacing={3} width='685px' marginTop={12}>
-        <Grid item xs={12} display="flex" flexDirection='row' alignItems="center">
-          <StyledImg src='https://source.unsplash.com/random' alt='123'/>
-          <Typography fontSize={'3em'} marginRight='54px'>uploader</Typography>
-          <Button variant="contained">Follow</Button>
-        </Grid>
+      <Grid container width='685px' marginTop={12}>
+        {/* image */}
         <Grid item xs={12}>
-          <Tittleimg src='https://source.unsplash.com/random' alt='123' />
+          <Tittleimg src='https://source.unsplash.com/random' alt='123' sx={{objectFit:'cover'}}/>
         </Grid>
-        <Grid item xs={12}>
-          <Typography fontSize={'2em'}>RECIPE NAME {`${info}`}</Typography>
-          <Typography>This is discription</Typography>
+        {/* Tittle */}
+        <Grid item xs={12} marginTop={5} display="flex" flexDirection='row' alignItems="center" justifyContent={'space-between'}>
+          <Box>
+            <Typography fontSize={'2em'}>RECIPE NAME {`${info}`}</Typography>
+            <Typography>This is discription</Typography>
+          </Box>
+          <Button startIcon={LikeState[0]?<ThumbUpAltIcon/>:<ThumbUpOffAltIcon/>} onClick={handleLike}>{`${LikeState[1]}`}</Button>
         </Grid>
-        <Grid item xs={12}>
+        {/* avatar and subcrib */}
+        <Grid item xs={12} marginTop={3} display="flex" flexDirection='row' alignItems="center" justifyContent={'space-between'}>
+          <Box display="flex" flexDirection='row' alignItems="center">
+            <Avatar src='https://source.unsplash.com/random' alt='123'/>
+            <Typography fontSize={'1em'} margin='0 20px'>Contributor</Typography>
+          </Box>
+          <Button variant="outlined" onClick={handleSubcrib}>{SubcribState? 'unsubscrib':`subcrib`}</Button>
+        </Grid>
+        {/* tags */}
+        <Grid item xs={12} marginTop={5}>
           <Typography fontSize={'2em'}>TAGS</Typography>
           <Box display={'flex'} flexWrap={'wrap'}>
             {tags.map((info, key) => (
@@ -188,7 +264,8 @@ const RecipeContent = ( {info} ) => {
             ))}
           </Box>
         </Grid>
-        <Grid item xs={12}>
+        {/* ingredients */}
+        <Grid item xs={12} marginTop={5}>
           <Typography fontSize={'2em'}>Ingredients</Typography>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650, border:0 }} aria-label="simple table">
@@ -221,21 +298,62 @@ const RecipeContent = ( {info} ) => {
             </Table>
           </TableContainer>
         </Grid>
-        <Grid item xs={12}>
-          <Typography fontSize={'2em'} sx={{marginBottom:'16px'}}>{`Recipe Step`}</Typography>
+        {/* step */}
+        <Grid item xs={12} marginTop={5}>
+          <Typography fontSize={'2em'} sx={{marginBottom:'16px'}}>Recipe Step</Typography>
           <Stack spacing={2}>
             {RecipeStep.map((info,key) => (
-              <>
-                <Typography fontSize={'1.2em'} key={key}>{`STEP ${key+1}/${RecipeStep.length}`}</Typography>
+              <Box key={key}>
+                <Typography fontSize={'1.2em'}>STEP {key+1}/{RecipeStep.length}</Typography>
                 <Box display={'flex'} flexDirection='row'>
-                  <StepImg src={`${info.img}`} alt={'123'}/>
-                  <Typography sx={{paddingLeft:'1em'}}>{`${info.Description}`}</Typography>
+                  <StepImg src={`${info.img}`} alt={'123'} sx={{objectFit:'cover'}}/>
+                  <Typography sx={{paddingLeft:'1em'}}>{info.Description}</Typography>
                 </Box>
-              </>
+              </Box>
             ))}
           </Stack>
         </Grid>
+        {/* comment & recommendation */}
+        <Grid item xs={12} marginTop={5}>
+          <Box sx={{width:'100%'}}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider', display:'flex', alignContent:'center', justifyContent:'center' }}>
+              <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                <Tab label='Recommendation' {...a11yProps(0)}/>
+                <Tab label='Comments' {...a11yProps(1)}/>
+              </Tabs>
+            </Box>
+            {/* recommendation */}
+            <TabPanel value={value} index={0}>
+              <Stack>
+              {Recommendation.map((info, key) => (
+                <Box key={key} marginTop={'20px'}>
+                  <Box display={'flex'} flexDirection='row'>
+                    <StepImg src={`${info.img}`} alt={'123'} sx={{objectFit:'cover'}}/>
+                    <Typography sx={{paddingLeft:'1em'}}>{info.Description}</Typography>
+                  </Box>
+                </Box>
+              ))}
+              </Stack>
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              {comments.map((info,key) => (
+                <Box key={key} display='flex' flexDirection={'row'} alignContent='center' marginTop={1}>
+                  <AccountCircle sx={{ color: 'action.active' }} />
+                  <Typography key={key}>:{info.comment}</Typography>
+                </Box>
+              ))}
+              <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                <AccountCircle sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
+                <TextField id="newComment" label="leave a comment" variant="standard" onKeyUp={handleSubmit}/>
+              </Box>
+            </TabPanel>
+          </Box>
+        </Grid>
       </Grid>
+      <ButtonGroup sx={{position:'fixed', right:'1em', bottom:'1em'}} orientation="vertical">
+        <Button startIcon={LikeState[0]?<ThumbUpAltIcon/>:<ThumbUpOffAltIcon/>} onClick={handleLike}/>
+        <Button startIcon={markState?<FavoriteIcon/>:<FavoriteBorderIcon/>} onClick={handleMark}/>
+      </ButtonGroup>
     </Box>
   );
 }

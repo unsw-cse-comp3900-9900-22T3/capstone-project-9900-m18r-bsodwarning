@@ -12,6 +12,7 @@ import RecipeEdit from './pages/RecipeEdit';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import RecipeDetail from './pages/RecipeDetail';
+import UserProfile from './pages/UserProfile';
 
 const Index = () => {
   return <>
@@ -25,6 +26,7 @@ const Index = () => {
           <Route path="/RecipeDetail" element={<RecipeDetail />}>
             <Route path="/RecipeDetail/:id" element={<RecipeDetail />}/>
           </Route>
+          <Route path="/Profile" element={<UserProfile />}></Route>
         </Routes>
       </BrowserRouter>
     </React.Fragment>
