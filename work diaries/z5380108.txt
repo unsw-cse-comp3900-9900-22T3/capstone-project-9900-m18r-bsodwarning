@@ -1,5 +1,0 @@
-Week1
-we have formed the group and discussed all the topic then declare the topic - meal recommendation system, we have create jira envrionment and repository and I am chosen to be scrum master. Then I create a google drive prepared with recording of weekly meeting and project proposal and report.
-
-Week2
-We have decided the user interface and I have designed the interface of creatingnew recipe 
