@@ -11,9 +11,10 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { CardActionArea } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-export default function RecipeCard() {
+export default function RecipeCard( {info} ) {
   const StyledMedia = styled(CardMedia)(({theme}) => ({
     height:'30vmin',
+    minHeight:'20em',
     objectFit:'cover'
   }));
   const [heartCdt, setheart] = React.useState(false)
@@ -30,7 +31,7 @@ export default function RecipeCard() {
     <Card
       sx={{ display: 'flex', flexDirection: 'column', position: 'relative' }}
     >
-      <CardActionArea onClick={() => navigate('RecipeDetail')}>
+      <CardActionArea onClick={() => {navigate(`/RecipeDetail/${info}`)}}>
         <StyledMedia
           component="img"
           image="https://source.unsplash.com/random"

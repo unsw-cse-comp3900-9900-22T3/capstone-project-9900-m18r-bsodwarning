@@ -163,39 +163,25 @@ const Advertisement = () => {
 }
 
 const RecipeDisplay = () => {
-  const cardlist = [1,1,1,1,1,1,1,1,1,1,1,1]
+  const cardlist = [1,2,3,4,5,6,7,8,9,10]
+  const tags = ['beef', 'tomato', 'sauce', 'tomato', 'sauce', 'sauce', 'tomato', 'sauce', 'tomato', 'sauce', 'tomato', 'sauce']
+
   return (
     <Box sx={{ flexGrow:1, margin:6 }} display="flex" justifyContent="center" alignItems="center">
       <Grid container spacing={2} width={1100} >
         <Grid item xs={12}>
           <Typography variant='h3' display="flex" justifyContent="center" alignItems="center">What do you want to cook?</Typography>
         </Grid>
-        <Grid container display="flex" justifyContent="space-around" alignItems="center" spacing={2} sx={{marginLeft:'25vw', marginRight:'2 5vw'}}>
-          <Grid item xs={3}>
-            <Chip  color="primary" label='#beef' clickable/>
-          </Grid>
-          <Grid item xs={3}>
-            <Chip  color="primary" label='#beef' clickable/>
-          </Grid>
-          <Grid item xs={3}>
-            <Chip  color="primary" label='#beef' clickable/>
-          </Grid>
-          <Grid item xs={3}>
-            <Chip  color="primary" label='#beef' clickable/>
-          </Grid>
-          <Grid item xs={3}>
-            <Chip  color="primary" label='#beef' clickable/>
-          </Grid>
-          <Grid item xs={3}>
-            <Chip  color="primary" label='#beef' clickable/>
-          </Grid>
-          <Grid item xs={3}>
-            <Chip  color="primary" label='#beef' clickable/>
-          </Grid>
+        <Grid item xs={12}>
+          <Box display={'flex'} flexWrap={'wrap'} sx={{ padding:'0 10%'}}>
+          {tags.map((info, key) => (
+              <Chip  color="primary" label={`#${info}`} clickable key={key} sx={{ margin:'10px'}}/>
+            ))}
+          </Box>
         </Grid>
         {cardlist.map((info, index) => (
           <Grid item xs={4} key={index}>
-            <RecipeCard/>
+            <RecipeCard info={info}/>
           </Grid>
         ))}
       </Grid>

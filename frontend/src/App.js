@@ -22,7 +22,9 @@ const Index = () => {
           <Route path="/RecipeEdit" element={<RecipeEdit />}></Route>
           <Route path="/Login" element={<Login />}></Route>
           <Route path="/Signup" element={<Signup />}></Route>
-          <Route path="/RecipeDetail" element={<RecipeDetail />}></Route>
+          <Route path="/RecipeDetail" element={<RecipeDetail />}>
+            <Route path="/RecipeDetail/:id" element={<RecipeDetail />}/>
+          </Route>
         </Routes>
       </BrowserRouter>
     </React.Fragment>
