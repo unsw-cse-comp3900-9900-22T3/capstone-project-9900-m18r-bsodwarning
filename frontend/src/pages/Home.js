@@ -84,7 +84,7 @@ const Header = () => {
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
           >
-            Tasty studio
+            Taste studio
           </Typography>
           <Search>
             <SearchIconWrapper>
@@ -164,7 +164,7 @@ const Advertisement = () => {
 
 const RecipeDisplay = () => {
   const cardlist = [1,2,3,4,5,6,7,8,9,10]
-  const tags = ['beef', 'tomato', 'sauce', 'tomato', 'sauce', 'sauce', 'tomato', 'sauce', 'tomato', 'sauce', 'tomato', 'sauce']
+  const tags = ['meat', 'vagatable', 'egg', 'fry']
 
   return (
     <Box sx={{ flexGrow:1, margin:6 }} display="flex" justifyContent="center" alignItems="center">

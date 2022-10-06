@@ -13,12 +13,14 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import RecipeDetail from './pages/RecipeDetail';
 import UserProfile from './pages/UserProfile';
+import TryPage from './pages/TryPage' 
 
 const Index = () => {
   return <>
     <React.Fragment>
       <BrowserRouter>
         <Routes>
+          <Route path="/test" element={<TryPage />}></Route>
           <Route path="/" element={<Home />}></Route>
           <Route path="/RecipeEdit" element={<RecipeEdit />}></Route>
           <Route path="/Login" element={<Login />}></Route>

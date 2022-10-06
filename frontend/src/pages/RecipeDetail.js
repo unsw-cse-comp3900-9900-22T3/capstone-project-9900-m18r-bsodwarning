@@ -95,7 +95,7 @@ const Header = () => {
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
           >
-            Tasty studio
+            Taste studio
           </Typography>
           <Search component='form'>
             <SearchIconWrapper>
@@ -234,7 +234,7 @@ const RecipeContent = ( {info} ) => {
   }
   return(
     <Box display="flex" justifyContent="center" alignItems="center" sx={{ marginTop:'64px', width:'100%'}}>
-      <Grid container width='685px' marginTop={12}>
+      <Grid container width='700px' marginTop={12}>
         {/* image */}
         <Grid item xs={12}>
           <Tittleimg src='https://source.unsplash.com/random' alt='123' sx={{objectFit:'cover'}}/>

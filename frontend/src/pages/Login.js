@@ -29,13 +29,32 @@ const theme = createTheme();
 
 export default function Login() {
   const navigate = useNavigate();
-  const handleSubmit = (event) => {
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
       email: data.get('email'),
       password: data.get('password'),
     });
+    const email = data.get('email')
+    const password = data.get('password')
+    const response = await fetch('path', {
+      method:'POST',
+      header:{
+        'Content-type': 'application/json'
+      },
+      body:{
+        email,
+        password
+      }
+    })
+    const info = await response.json()
+    if(info.error){
+      console.log(info.error)
+    } else {
+      navigate('/')
+    }
   };
 
   return (

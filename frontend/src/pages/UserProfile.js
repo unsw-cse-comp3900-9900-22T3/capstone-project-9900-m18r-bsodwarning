@@ -196,6 +196,13 @@ const ProfileContent = () => {
     )
   }
   const InfoDisplay = () => {
+    var newUserInfo = {...userInfo}
+    const handleChange = (prop) => (e) => {
+      newUserInfo = {...newUserInfo, [prop]: e.target.value}
+    }
+    const handleSubmit = () => {
+      setInfo(newUserInfo)
+    }
     const StyledBox = styled(Box) (({theme}) => ({
       width:'100%',
       display:'flex',
@@ -218,44 +225,44 @@ const ProfileContent = () => {
           <StyledBox>
             <Typography>User Name</Typography>
             <Box width={'50%'}>
-              <TextField id='name' size='small' defaultValue={userInfo.name} fullWidth />
+              <TextField id='name' size='small' defaultValue={userInfo.name} fullWidth onChange={handleChange('name')}/>
             </Box>
           </StyledBox>
           <StyledBox>
             <Typography>Email</Typography>
             <Box width={'50%'}>
-              <TextField id='email' size='small' defaultValue={userInfo.email} fullWidth />
+              <TextField id='email' size='small' defaultValue={userInfo.email} fullWidth onChange={handleChange('email')}/>
             </Box>
           </StyledBox>
           <StyledBox>
             <ItemBox>
               <Typography>Gender</Typography>
-              <TextField id='gender' size='small' defaultValue={userInfo.gender}/>
+              <TextField id='gender' size='small' defaultValue={userInfo.gender} onChange={handleChange('gender')}/>
             </ItemBox>
             <ItemBox>
               <Typography>Age</Typography>
-              <TextField id='age' size='small' defaultValue={userInfo.age}/>
+              <TextField id='age' size='small' defaultValue={userInfo.age} onChange={handleChange('age')}/>
             </ItemBox>
           </StyledBox>
           <StyledBox>
             <ItemBox>
               <Typography>Height</Typography>
-              <TextField id='Height' size='small' defaultValue={`${userInfo.Height}cm`}/>
+              <TextField id='Height' size='small' defaultValue={`${userInfo.Height}cm`} onChange={handleChange('Height')}/>
             </ItemBox>
             <ItemBox>
               <Typography>Weight</Typography>
-              <TextField id='weight' size='small' defaultValue={`${userInfo.weight}kg`}/>
+              <TextField id='weight' size='small' defaultValue={`${userInfo.weight}kg`} onChange={handleChange('weight')}/>
             </ItemBox>
           </StyledBox>
           <StyledBox>
             <ItemBox>
               <Typography>Cooking Level</Typography>
-              <TextField id='level' size='small' defaultValue={userInfo.level}/>
+              <TextField id='level' size='small' defaultValue={userInfo.level} onChange={handleChange('level')}/>
             </ItemBox>
           </StyledBox>
           <StyledBox>
             <Typography>The time you are willing to spend on cooking per meal</Typography>
-            <TextField id='time' size='small' defaultValue={`${userInfo.time}h`}/>
+            <TextField id='time' size='small' defaultValue={`${userInfo.time}h`} onChange={handleChange('time')}/>
           </StyledBox>
           <Box>
             <Typography sx={{marginTop:'20px'}}>Preference</Typography>
@@ -276,7 +283,7 @@ const ProfileContent = () => {
             </Box>
           </Box>
           <ButtonGroup sx={{ width:'100%', display:'flex', justifyContent:'space-around', marginTop:'40px'}}>
-            <Button variant='contained' color='success'>Save Change</Button>
+            <Button variant='contained' color='success' onClick={handleSubmit}>Save Change</Button>
           </ButtonGroup>
         </Stack>
       </Grid>
