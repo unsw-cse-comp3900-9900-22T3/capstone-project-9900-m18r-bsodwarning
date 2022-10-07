@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 function Copyright(props) {
   return (
@@ -29,7 +30,8 @@ const theme = createTheme();
 
 export default function Login() {
   const navigate = useNavigate();
-
+  const { enqueueSnackbar } = useSnackbar();
+  const HostName = '42.192.146.124:3010'
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -39,21 +41,21 @@ export default function Login() {
     });
     const email = data.get('email')
     const password = data.get('password')
-    const response = await fetch('path', {
+    const response = await fetch(`http://${HostName}/login`, {
       method:'POST',
       header:{
         'Content-type': 'application/json'
       },
-      body:{
+      body:JSON.stringify({
         email,
         password
-      }
+      })
     })
     const info = await response.json()
     if(info.error){
       console.log(info.error)
     } else {
-      navigate('/')
+      enqueueSnackbar('This is a success message!', 'success');
     }
   };
 

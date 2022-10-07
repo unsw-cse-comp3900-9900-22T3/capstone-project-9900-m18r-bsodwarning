@@ -5,16 +5,19 @@ import * as React from 'react';
 export default function testpage() {
 
   const FetchTest = async () => {
-    const response = await fetch('https://319e5298-9b95-4a74-8b93-bdc7890529d5.mock.pstmn.io/Login', {
-      method:'GET',
+    const response = await fetch('http://42.192.146.124:3010/login', {
+      method:'POST',
       header:{
         'Content-type': 'application/json'
-      }
+      },
+      body: JSON.stringify({
+        'email':'eiffelkefka@gmail.com',
+        'password':'abcdefg'
+      })
     })
     const data = await response.json()
     console.log(data)
   } 
-
   return(
     <Box sx={{width:'100%', marginTop:'20vh', display:'flex', justifyContent:'center'}}>
       <Button onClick={FetchTest}>test1</Button>

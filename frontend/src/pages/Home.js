@@ -12,11 +12,16 @@ import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import RecipeCard from '../components/RecipeCard';
-import { Grid } from '@mui/material';
-import Chip from '@mui/material/Chip';
+import { Grid, Button, ButtonGroup } from '@mui/material';
 import Link from '@mui/material/Link';
 import Divider from '@mui/material/Divider';
 import { useNavigate } from 'react-router-dom';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ClickAwayListener from '@mui/material/ClickAwayListener';
+import Grow from '@mui/material/Grow';
+import Paper from '@mui/material/Paper';
+import Popper from '@mui/material/Popper';
+import MenuList from '@mui/material/MenuList';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -164,23 +169,119 @@ const Advertisement = () => {
 
 const RecipeDisplay = () => {
   const cardlist = [1,2,3,4,5,6,7,8,9,10]
-  const tags = ['meat', 'vagatable', 'egg', 'fry']
+
+  // const GetCardList = async () => {
+  //   const response = await fetch(('/path'), {
+  //     method:'GET',
+  //     header:{
+  //       'Content-type': 'application/json'
+  //     }
+  //   })
+  // }
+  const guide = {
+    'Day Time':['Breakfast', 'Lunch', 'Dinner', 'Snacks'],
+    'Diet':['Low Carb Recipes', 'Vegatarian Dishes', 'Vegan Dishes'],
+    'Dish Type':['Meat', 'Fish', 'Chicken', 'Soup', 'Salad', 'Dessert'],
+    'International':['Asian', 'Chinese', 'French', 'Japanese', 'Indian', 'Italian', 'Spanish'],
+    'Occation':['Easy', 'Quick', 'Kids', 'Party', 'Summer', 'Winter'],
+    'Baking': ['Bread', 'Cookies', 'cake'],
+    'Drink':['Juice', 'Smoothies', 'Tea', 'Cocktails'],
+    "More":[]
+  }
+  const GuideBar = ({props}) => {
+    const options = guide[`${props}`]
+    const [open, setOpen] = React.useState(false);
+    const anchorRef = React.useRef(null);
+
+    const handleClick = (option) => {
+      console.info(`You clicked ${option}`);
+    };
+
+    const handleToggle = () => {
+      setOpen((prevOpen) => !prevOpen);
+    };
+
+    const handleClose = (event) => {
+      if (anchorRef.current && anchorRef.current.contains(event.target)) {
+        return;
+      }
+
+      setOpen(false);
+    };
+
+    if(props === 'More'){
+      return(
+        <Button variant="contained">More</Button>
+      )
+    }else{
+    return (
+      <React.Fragment>
+        <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button">
+          <Button onClick={handleToggle}>{props}</Button>
+          <Button
+            size="small"
+            aria-controls={open ? 'split-button-menu' : undefined}
+            aria-expanded={open ? 'true' : undefined}
+            aria-label="select merge strategy"
+            aria-haspopup="menu"
+            onClick={handleToggle}
+          >
+            <ArrowDropDownIcon />
+          </Button>
+        </ButtonGroup>
+        <Popper
+          sx={{
+            zIndex: 1,
+          }}
+          open={open}
+          anchorEl={anchorRef.current}
+          role={undefined}
+          transition
+          disablePortal
+        >
+          {({ TransitionProps, placement }) => (
+            <Grow
+              {...TransitionProps}
+              style={{
+                transformOrigin:
+                  placement === 'bottom' ? 'center top' : 'center bottom',
+              }}
+            >
+              <Paper>
+                <ClickAwayListener onClickAway={handleClose}>
+                  <MenuList id="split-button-menu" autoFocusItem>
+                    {options.map((option, index) => (
+                      <MenuItem
+                        key={index}
+                        onClick={() => handleClick(option)}
+                      >
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </MenuList>
+                </ClickAwayListener>
+              </Paper>
+            </Grow>
+          )}
+        </Popper>
+      </React.Fragment>
+    );}
+  }
 
   return (
     <Box sx={{ flexGrow:1, margin:6 }} display="flex" justifyContent="center" alignItems="center">
-      <Grid container spacing={2} width={1100} >
+      <Grid container spacing={2} width={'85vw'} >
         <Grid item xs={12}>
           <Typography variant='h3' display="flex" justifyContent="center" alignItems="center">What do you want to cook?</Typography>
         </Grid>
-        <Grid item xs={12}>
-          <Box display={'flex'} flexWrap={'wrap'} sx={{ padding:'0 10%'}}>
-          {tags.map((info, key) => (
-              <Chip  color="primary" label={`#${info}`} clickable key={key} sx={{ margin:'10px'}}/>
-            ))}
-          </Box>
+        <Grid item xs={12} sx={{display:'flex', flexdirection:'row', justifyContent:'space-between', flexWrap:'wrap'}}>
+          {Object.keys(guide).map((info, index) => (
+            <GuideBar key={index} props={info}/>
+          ))
+          }
         </Grid>
         {cardlist.map((info, index) => (
-          <Grid item xs={4} key={index}>
+          <Grid item sm={6} md={4} lg={3} key={index}>
             <RecipeCard info={info}/>
           </Grid>
         ))}

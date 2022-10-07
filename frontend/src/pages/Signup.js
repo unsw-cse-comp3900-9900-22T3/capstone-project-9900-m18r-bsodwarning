@@ -3,8 +3,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -30,13 +28,36 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignUp() {
-  const handleSubmit = (event) => {
+
+  const handleSubmit = async (event) => {
+    const HostName = '42.192.146.124:3010'
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
       email: data.get('email'),
       password: data.get('password'),
+      name: data.get('name'),
     });
+    const email = data.get('email')
+    const password = data.get('password')
+    const name = data.get('name')
+    const response = await fetch(`http://${HostName}/register`, {
+      method:'POST',
+      header:{
+        'Content-type': 'application/json'
+      },
+      body:JSON.stringify({
+        name,
+        email,
+        password
+      })
+    })
+    const info = await response.json()
+    if(info.error){
+      console.log(info.error)
+    } else {
+      console.log(info)
+    }
   };
 
   const navigate = useNavigate();
@@ -63,7 +84,7 @@ export default function SignUp() {
               <Grid item xs={12}>
                 <TextField
                   autoComplete="given-name"
-                  name="Name"
+                  name="name"
                   required
                   fullWidth
                   id="name"
