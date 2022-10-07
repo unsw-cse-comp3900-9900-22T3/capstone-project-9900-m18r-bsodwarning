@@ -2,18 +2,19 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
-import { CardMedia } from '@mui/material';
+import { CardMedia, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { CardActionArea } from '@mui/material';
+import { CardActionArea, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
-export default function RecipeCard() {
+import './RecipeCard.css'
+export default function RecipeCard( {info} ) {
   const StyledMedia = styled(CardMedia)(({theme}) => ({
     height:'30vmin',
+    minHeight:'20em',
     objectFit:'cover'
   }));
   const [heartCdt, setheart] = React.useState(false)
@@ -30,33 +31,31 @@ export default function RecipeCard() {
     <Card
       sx={{ display: 'flex', flexDirection: 'column', position: 'relative' }}
     >
-      <CardActionArea onClick={() => navigate('RecipeDetail')}>
+      <CardActionArea onClick={() => {navigate(`/RecipeDetail/${info}`)}}>
         <StyledMedia
           component="img"
           image="https://source.unsplash.com/random"
           alt="random"
         />
         </CardActionArea>
-        <CardActions
-          display='flex' justifycontent='space-between'
-          sx={{
-            position: 'absolute',
-            bottom: 0,
-            right:0,
-            // background: 'linear-gradient(to top, #000, rgba(0,0,0,0))',
-          }}
-        >
-          
-          <Button
-            startIcon={heartCdt? <FavoriteIcon/>:<FavoriteBorderIcon/>}
-            size="small"
-            onClick={hadleLike}
-          />
-          <Button
-            startIcon={thumbCdt? <ThumbUpIcon/>:<ThumbUpOffAltIcon/>}
-            size="small"
-            onClick={handleThumb}
-          />
+        <CardActions>
+          <Box sx={{display:'flex', justifyContent:'space-between', width:'100%'}}>
+            <Typography marginLeft={'10px'}>Tittle</Typography>
+            <Box>
+              <Button
+                id='favorbutton'
+                startIcon={heartCdt? <FavoriteIcon/>:<FavoriteBorderIcon/>}
+                size="small"
+                onClick={hadleLike}
+              />
+              <Button
+                id='thunbbutton'
+                startIcon={thumbCdt? <ThumbUpIcon/>:<ThumbUpOffAltIcon/>}
+                size="small"
+                onClick={handleThumb}
+              />
+            </Box>
+          </Box>
         </CardActions>
     </Card>
   )

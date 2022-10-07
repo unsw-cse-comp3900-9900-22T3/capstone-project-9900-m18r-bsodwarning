@@ -11,10 +11,11 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
-
+import { useSnackbar } from 'notistack';
+import './home.css'
 function Copyright(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
+    <Typography variant="body2" id="idtest"  align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
         Your Website
@@ -29,13 +30,33 @@ const theme = createTheme();
 
 export default function Login() {
   const navigate = useNavigate();
-  const handleSubmit = (event) => {
+  const { enqueueSnackbar } = useSnackbar();
+  const HostName = '42.192.146.124:3010'
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
       email: data.get('email'),
       password: data.get('password'),
     });
+    const email = data.get('email')
+    const password = data.get('password')
+    const response = await fetch(`http://${HostName}/login`, {
+      method:'POST',
+      header:{
+        'Content-type': 'application/json'
+      },
+      body:JSON.stringify({
+        email,
+        password
+      })
+    })
+    const info = await response.json()
+    if(info.error){
+      console.log(info.error)
+    } else {
+      enqueueSnackbar('This is a success message!', 'success');
+    }
   };
 
   return (
@@ -83,12 +104,13 @@ export default function Login() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              id='button'
             >
               Sign In
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link href="#" variant="body2" id='idtest'>
                   Forgot password?
                 </Link>
               </Grid>
@@ -97,6 +119,7 @@ export default function Login() {
                   href="#"
                   variant="body2"
                   onClick={()=>{navigate('/Signup')}}
+                  id='idtest'
                 >
                   {"Don't have an account? Sign Up"}
                 </Link>

@@ -1,0 +1,33 @@
+
+#idtest{
+    color:rgba(1, 20, 7, 0.914);
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+}
+#AppBar-test{
+    background-color: #f6feea;
+}
+#search-word{
+    color: black;
+}
+#search{
+    background-color: rgb(227, 242, 228);
+}
+#button{
+    background-color: #f6feea;
+    color: black;
+}
+html{
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+}
+#favorbutton{
+    color: rgb(229, 120, 120);
+}
+#subcribButton{
+    background-color: #f6feea;
+    color: black;
+    border-color: #f6feea;
+    
+}
+#email{
+    color:rgba(1, 20, 7, 0.914);
+}
