@@ -168,7 +168,7 @@ const Advertisement = () => {
 }
 
 const RecipeDisplay = () => {
-  const cardlist = [1,2,3,4,5,6,7,8,9,10]
+  const cardlist = [1,2,3,4,5,6,7,8,9,10,11,12]
 
   // const GetCardList = async () => {
   //   const response = await fetch(('/path'), {
@@ -270,7 +270,7 @@ const RecipeDisplay = () => {
 
   return (
     <Box sx={{ flexGrow:1, margin:6 }} display="flex" justifyContent="center" alignItems="center">
-      <Grid container spacing={2} width={'85vw'} >
+      <Grid container spacing={2} width={'85vw'}>
         <Grid item xs={12}>
           <Typography variant='h3' display="flex" justifyContent="center" alignItems="center">What do you want to cook?</Typography>
         </Grid>

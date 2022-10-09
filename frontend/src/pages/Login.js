@@ -4,14 +4,15 @@ import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import { Link, useNavigate } from 'react-router-dom';
+import { AppBar, Toolbar, IconButton,  } from '@mui/material';
+import HomeIcon from '@mui/icons-material/Home';
 
 function Copyright(props) {
   return (
@@ -28,8 +29,30 @@ function Copyright(props) {
 
 const theme = createTheme();
 
+const Header = () => {
+  const navigate = useNavigate()
+  return(
+    <Box sx={{ flexGrow: 1, position: 'fixed', left:0, right:0, top:0, zIndex:1 }}>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+          >
+            Log in
+          </Typography>
+          <IconButton onClick={() => {navigate('/')}}>
+            <HomeIcon/>
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+    </Box>
+  );
+}
+
 export default function Login() {
-  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const HostName = '42.192.146.124:3010'
   const handleSubmit = async (event) => {
@@ -61,11 +84,12 @@ export default function Login() {
 
   return (
     <ThemeProvider theme={theme}>
+      <Header />
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: '20vh',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -109,7 +133,7 @@ export default function Login() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link href="#" variant="body2" to={'/reset'}>
                   Forgot password?
                 </Link>
               </Grid>
@@ -117,7 +141,7 @@ export default function Login() {
                 <Link
                   href="#"
                   variant="body2"
-                  onClick={()=>{navigate('/Signup')}}
+                  to={'/signup'}
                 >
                   {"Don't have an account? Sign Up"}
                 </Link>

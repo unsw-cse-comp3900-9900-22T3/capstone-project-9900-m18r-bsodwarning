@@ -3,14 +3,15 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { AppBar, Toolbar, IconButton,  } from '@mui/material';
+import HomeIcon from '@mui/icons-material/Home';
 
 function Copyright(props) {
   return (
@@ -26,6 +27,29 @@ function Copyright(props) {
 }
 
 const theme = createTheme();
+
+const Header = () => {
+  const navigate = useNavigate()
+  return(
+    <Box sx={{ flexGrow: 1, position: 'fixed', left:0, right:0, top:0, zIndex:1 }}>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+          >
+            Sign Up
+          </Typography>
+          <IconButton onClick={() => {navigate('/')}}>
+            <HomeIcon/>
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+    </Box>
+  );
+}
 
 export default function SignUp() {
 
@@ -59,15 +83,14 @@ export default function SignUp() {
       console.log(info)
     }
   };
-
-  const navigate = useNavigate();
   return (
     <ThemeProvider theme={theme}>
+      <Header />
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: '20vh',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -124,7 +147,7 @@ export default function SignUp() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2" onClick={()=>navigate('/Login')}>
+                <Link href="#" variant="body2" to={'/Login'}>
                   Already have an account? Sign in
                 </Link>
               </Grid>

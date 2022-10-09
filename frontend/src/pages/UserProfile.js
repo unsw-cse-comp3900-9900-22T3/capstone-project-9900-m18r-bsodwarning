@@ -289,6 +289,8 @@ const ProfileContent = () => {
       </Grid>
     )
   }
+  
+  const navigate = useNavigate()
   return(
     <Box display="flex" justifyContent="center" alignItems="center" sx={{ margin:'110px 0', width:'100%'}}>
       <Grid container marginTop={12} sx={{ border:'2px solid #c9f980',width:'964px', borderRadius:'5px', padding:'20px 30px'}}>
@@ -311,7 +313,7 @@ const ProfileContent = () => {
                 </IconButton>
               </Tooltip>
               <Tooltip title={'Change password'}>
-                <IconButton sx={{marginBottom:'176px'}}>
+                <IconButton sx={{marginBottom:'176px'}} onClick={() => {navigate('/reset')}}>
                   <KeyIcon/>
                 </IconButton>
               </Tooltip>
