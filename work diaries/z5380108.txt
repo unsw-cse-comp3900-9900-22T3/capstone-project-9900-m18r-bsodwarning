@@ -1,5 +1,16 @@
 Week1
-we have formed the group and discussed all the topic then declare the topic - meal recommendation system, we have create jira envrionment and repository and I am chosen to be scrum master. Then I create a google drive prepared with recording of weekly meeting and project proposal and report.
+We have formed the group and discussed all the topic then declare the topic - meal recommendation system, we have create Jira environment and repository and I am chosen to be scrum master. Then I create a google drive prepared with recording of weekly meeting and project proposal and report.
 
 Week2
-We have decided the user interface and I have designed the interface of creatingnew recipe 
+We have decided the user interface and I have designed the interface of 
+1. creating new recipe. 2. the detail of recipe. 3. edit the recipe.
+
+Week3
+I am the coordinator in project proposal. I am assigned the task to write:
+1. Project objective 2. User stories 3. Sprints 4. Novel functionality 5. Assign the priority of each user story in Jira. Then conduct the progress of each part in report.
+
+Week4
+This week we are prepared to progressive demo in wk5, and I created the sprint 1 in Jira to check it has done and mark as done. Then I separate the work in presentation and also present the user story and recipe. Not only this, on the aspect of technical aspect, I created sql of recipe and help Shengtao Bian write the scrapy python program to extract more detailed information of recipe.
+
+Week5
+This week we have discussed the retrospective about what went well and what not and I am responsible to write what went well, what not and to try. Also, we have launched and separate the task in the sprint2. I am assigned the task to implement the recipe contribute, delete, edit in backend.
