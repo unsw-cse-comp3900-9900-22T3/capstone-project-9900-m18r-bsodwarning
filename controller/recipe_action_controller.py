@@ -31,7 +31,7 @@ class RecipeAction():
             return False
         return True
 
-    def alter_recipe(self, recipe,detail):
+    def alter_recipe(self, recipe, detail):
         try:
             self.recipe_detail_sql_session.query(Recipe).filter(Recipe.index == recipe.index).update(detail)
             # self.register_user_sql_session.

@@ -62,6 +62,7 @@ class Recipe(Base):
     omega_6_fatty_acid_g = Column(Float())
     instructions_list = Column(Text())
     image = Column(Text())
+    #step_image_list = Column(Text())
 
 
     def __init__(self):

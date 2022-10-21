@@ -222,6 +222,28 @@ def recipe_detail(index):
     except Exception as e:
         return jsonify({"code": 500, "error": "recipe card query fail."})
 
-
+##TO DO CREATE RECIPE
+@app.route('/recipe/create/', methods=["POST"])
+def create_recipe():
+    request_str = request.get_data()
+    request_dict = json.loads(request_str)
+    
+    recipe = Recipe()
+    recipe.author = request_dict["email"]
+    recipe.title = request_dict["name"]
+    recipe.image = request_dict["cover"]
+    recipe.description = request_dict["description"]
+    recipe.ingredients = request_dict["ingredient"]
+    recipe.instructions_list = request_dict["Step"]
+    recipe.category = request_dict["tags"]
+    
+    recipe.index = uuid.uuid1().hex
+    
+    save_recipe = RecipeAction().save_recipe(recipe)
+    
+    return jsonify({"code": 200, 
+                    "msg": "create recipe successfully."})
+    
+## ALTER RECIPE, DEL RECIPE
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=3010, threaded=True)
