@@ -62,7 +62,7 @@ class Recipe(Base):
     omega_6_fatty_acid_g = Column(Float())
     instructions_list = Column(Text())
     image = Column(Text())
-    #step_image_list = Column(Text())
+    step_images = Column(Text())
 
 
     def __init__(self):
@@ -121,6 +121,7 @@ class Recipe(Base):
             omega_6_fatty_acid_g,
             instructions_list,
             image,
+            step_images,
     ):
         self.title = title,
         self.url = url,
@@ -170,4 +171,5 @@ class Recipe(Base):
         self.omega_3_fatty_acid_g = omega_3_fatty_acid_g,
         self.omega_6_fatty_acid_g = omega_6_fatty_acid_g,
         self.instructions_list = instructions_list,
-        self.image = image
+        self.image = image,
+        self.step_images = step_images

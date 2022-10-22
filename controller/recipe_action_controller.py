@@ -8,6 +8,9 @@ recipe = Recipe()
 class RecipeAction():
     def __init__(self) -> None:
         self.recipe_detail_sql_session = MysqlServer().get_recipe_detail_session()
+        
+    def get_the_max_index(self):
+        return self.recipe_detail_sql_session.query(Recipe).count()
 
     def save_recipe(self, recipe):
         try:
@@ -49,8 +52,6 @@ class RecipeAction():
             print(str(e))
             return None
         return recipe_detail
-
-    
 
 
 username = 'root'

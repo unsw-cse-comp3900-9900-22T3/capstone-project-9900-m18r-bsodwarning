@@ -227,22 +227,61 @@ def recipe_detail(index):
 def create_recipe():
     request_str = request.get_data()
     request_dict = json.loads(request_str)
-    
+
     recipe = Recipe()
-    recipe.author = request_dict["email"]
-    recipe.title = request_dict["name"]
-    recipe.image = request_dict["cover"]
-    recipe.description = request_dict["description"]
-    recipe.ingredients = request_dict["ingredient"]
-    recipe.instructions_list = request_dict["Step"]
-    recipe.category = request_dict["tags"]
     
-    recipe.index = uuid.uuid1().hex
+    database_size = RecipeAction().get_the_max_index()
+    database_size+=1
     
+    recipe.index = database_size
+    recipe.title = request_dict.get("name", '')
+    recipe.category = ','.join(request_dict["tags"])
+    recipe.author = request_dict.get("email", '')
+    recipe.description = request_dict.get("description", '')
+    recipe.rating = request_dict.get("rating", '')
+    
+    ##Currently, undefined in the frontend
+    recipe.rating_count = request_dict.get("rating_count", '')
+    recipe.review_count = request_dict.get("review_count", '')
+    recipe.directions = request_dict.get("directions", '')
+    recipe.prep_time = request_dict.get("prep_time", '')
+    recipe.cook_time = request_dict.get("cook_time", '')
+    recipe.total_time = request_dict.get("total_time", '')
+    recipe.yields = request_dict.get("yields", '')
+    recipe.calories = request_dict.get("calories", '')
+    recipe.directions = request_dict.get("directions", '')
+    
+    recipe.image = request_dict.get("cover", '')
+    
+    ingredient_pair = request_dict.get("ingredient", '')
+    if ingredient_pair:
+        ingredient_list = ['{} {}'.format(pair['amount'],pair['ingredient']) for pair in ingredient_pair]
+        ingredient_str = ';'.join(ingredient_list)
+        recipe.ingredients = ingredient_str
+    else:
+        recipe.ingredients = ''
+        
+    step_pair = request_dict.get("Step", '')
+    if step_pair:
+        cover_list = ['{}'.format(pair['cover']) for pair in step_pair]
+        descript_list = ['{}'.format(pair['description']) for pair in step_pair]
+        cover_str = ' '.join(cover_list)
+        descript_str = ' '.join(descript_list)
+        
+        recipe.step_images = cover_str if cover_str else ''
+        recipe.instructions_list = descript_str if descript_str else ''
+    else:
+        recipe.step_images = ''
+        recipe.instructions_list = ''
+
     save_recipe = RecipeAction().save_recipe(recipe)
-    
-    return jsonify({"code": 200, 
-                    "msg": "create recipe successfully."})
+
+    if not save_recipe:
+        return jsonify({"code": 500,
+                    "error": "Fail to save recipe!"})
+        
+    return jsonify({"code": 200,
+                    "msg": "Create recipe successfully."})
     
 ## ALTER RECIPE, DEL RECIPE
 if __name__ == '__main__':
