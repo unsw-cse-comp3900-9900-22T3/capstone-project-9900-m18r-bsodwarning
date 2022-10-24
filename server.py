@@ -222,15 +222,17 @@ def recipe_detail(index):
     except Exception as e:
         return jsonify({"code": 500, "error": "recipe card query fail."})
 
-##TO DO CREATE RECIPE
 @app.route('/recipe/create/', methods=["POST"])
 def create_recipe():
+    """Create/Contribute the recipe from user to the system
+    """
     request_str = request.get_data()
     request_dict = json.loads(request_str)
 
     recipe = Recipe()
     
-    database_size = RecipeAction().get_the_max_index()
+    database_size = RecipeAction().get_the_max_index() 
+    ##Generate the id based on the current maximum number of database in case duplicate index occur
     database_size+=1
     
     recipe.index = database_size
@@ -283,6 +285,75 @@ def create_recipe():
     return jsonify({"code": 200,
                     "msg": "Create recipe successfully."})
     
-## ALTER RECIPE, DEL RECIPE
+@app.route('/recipe/edit/<Recipe_ID>', methods=["POST"])
+def edit_recipe(Recipe_ID):
+    """Edit the Info of Recipe by its own user
+    """
+    request_str = request.get_data()
+    request_dict = json.loads(request_str)
+    
+    recipe_dict = {}
+    
+    recipe_dict["index"] = Recipe_ID
+    recipe_dict["title"] = request_dict.get("name", '')
+    recipe_dict["category"] = ','.join(request_dict["tags"])
+    recipe_dict["author"] = request_dict.get("email", '') 
+    recipe_dict["description"] = request_dict.get("description", '')
+    recipe_dict["rating"] = request_dict.get("rating", '')
+    
+    ##Currently, undefined in the frontend
+    recipe_dict["rating_count"] = request_dict.get("rating_count", '')
+    recipe_dict["review_count"] = request_dict.get("review_count", '')
+    recipe_dict["directions"] = request_dict.get("directions", '')
+    recipe_dict["prep_time"] = request_dict.get("prep_time", '')
+    recipe_dict["cook_time"] = request_dict.get("cook_time", '')
+    recipe_dict["total_time"] = request_dict.get("total_time", '')
+    recipe_dict["yields"] = request_dict.get("yields", '')
+    recipe_dict["calories"] = request_dict.get("calories", '')
+    recipe_dict["directions"] = request_dict.get("directions", '')
+    
+    recipe_dict["image"] = request_dict.get("cover", '')
+    
+    ingredient_pair = request_dict.get("ingredient", '')
+    if ingredient_pair:
+        ingredient_list = ['{} {}'.format(pair['amount'],pair['ingredient']) for pair in ingredient_pair]
+        ingredient_str = ';'.join(ingredient_list)
+        recipe_dict["ingredients"] = ingredient_str
+    else:
+        recipe_dict["ingredients"] = ''
+        
+    step_pair = request_dict.get("Step", '')
+    if step_pair:
+        cover_list = ['{}'.format(pair['cover']) for pair in step_pair]
+        descript_list = ['{}'.format(pair['description']) for pair in step_pair]
+        cover_str = ' '.join(cover_list)
+        descript_str = ' '.join(descript_list)
+        
+        recipe_dict["step_images"] = cover_str if cover_str else ''
+        recipe_dict["instructions_list"] = descript_str if descript_str else ''
+    else:
+        recipe_dict["step_images"] = ''
+        recipe_dict["instructions_list"] = ''
+
+    try:
+        updated_reciped = RecipeAction().edit_recipe(Recipe_ID, recipe_dict)
+    except Exception as e:
+        return jsonify({"code": 501, "error": "invalid email/RecipeId"})
+    if not updated_reciped:
+        return jsonify({"code": 500, "error": "invalid email/RecipeId."})
+
+    return jsonify({"code": 200, "msg": "Recipe info updated."})
+
+@app.route('/delete/recipe/<Recipe_ID>', methods=["POST"])
+def delete_recipe(Recipe_ID):
+    """Delete the recipe
+    """ 
+    del_recipe = RecipeAction().del_recipe_by_user(Recipe_ID)
+    if not del_recipe:
+        return jsonify({"code": 500, "error":"invalid email/RecipeId"})
+    
+    return jsonify({"code": 200, "msg":"you have deleted this recipe"})
+
+
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=3010, threaded=True)
+    app.run(debug=True, host='0.0.0.0', port=3014, threaded=True)
