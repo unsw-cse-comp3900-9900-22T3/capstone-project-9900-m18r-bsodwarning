@@ -231,11 +231,11 @@ def create_recipe():
 
     recipe = Recipe()
     
-    database_size = RecipeAction().get_the_max_index() 
+    max_index = RecipeAction().get_the_max_index()
     ##Generate the id based on the current maximum number of database in case duplicate index occur
-    database_size+=1
+    max_index+=1
     
-    recipe.index = database_size
+    recipe.index = max_index
     recipe.title = request_dict.get("name", '')
     recipe.category = ','.join(request_dict["tags"])
     recipe.author = request_dict.get("email", '')

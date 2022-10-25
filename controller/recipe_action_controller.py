@@ -8,9 +8,11 @@ recipe = Recipe()
 class RecipeAction():
     def __init__(self) -> None:
         self.recipe_detail_sql_session = MysqlServer().get_recipe_detail_session()
-        
+    
+    ##Get the maximum number of recipe through the last row of index
     def get_the_max_index(self):
-        return self.recipe_detail_sql_session.query(Recipe).count()
+        max_row = self.recipe_detail_sql_session.query(Recipe).order_by(Recipe.index.desc()).first()
+        return max_row.index
 
     def save_recipe(self, recipe):
         try:
@@ -21,23 +23,24 @@ class RecipeAction():
             return False
         return True
 
-    def del_recipe_by_user(self, recipe_id, username):
+    def del_recipe_by_user(self, recipe_id):
         try:
-            delItems = self.recipe_detail_sql_session.query(Recipe).filter(Recipe.index == recipe_id,
-                                                                            Recipe.author == username)
-            if delItems.count() > 0:
-                self.recipe_detail_sql_session.query(Recipe).filter(Recipe.index == recipe_id,
-                                                                    Recipe.author == username).delete()
-                self.recipe_detail_sql_session.commit()
+            delItems = self.recipe_detail_sql_session.query(Recipe).filter(Recipe.index == recipe_id)
+            if delItems.count() == 0:
+                return False
+            self.recipe_detail_sql_session.query(Recipe).filter(Recipe.index == recipe_id).delete()
+            self.recipe_detail_sql_session.commit()
         except Exception as e:
             print(str(e))
             return False
         return True
 
-    def alter_recipe(self, recipe, detail):
+    def edit_recipe(self, Recipe_ID, recipe_dict):
         try:
-            self.recipe_detail_sql_session.query(Recipe).filter(Recipe.index == recipe.index).update(detail)
-            # self.register_user_sql_session.
+            found_recipe = self.recipe_detail_sql_session.query(Recipe).filter(Recipe.index == Recipe_ID)
+            if found_recipe.count() == 0:
+                return False
+            found_recipe.update(recipe_dict)
             self.recipe_detail_sql_session.commit()
         except Exception as e:
             print(str(e))
