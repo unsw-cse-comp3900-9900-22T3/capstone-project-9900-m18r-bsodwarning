@@ -2,19 +2,20 @@ import sys
 
 sys.path.append("./")
 import json, time
-from flask_cors import *
 from flask import Flask, jsonify, request
+from flask_cors import *
 import uuid
 import random
 from dao.mysql_server import MysqlServer
 from dao.entity.register_user import RegisterUser
+from dao.entity.comment import Comment
 from dao.entity.recipe import Recipe
 from dao.entity.logitem import LogItem
 from dao.entity.user_likes import UserLikes
 from dao.entity.user_collections import UserCollections
 from controller.user_action_controller import UserAction
 from controller.recipe_action_controller import RecipeAction
-
+from controller.comment_action_controller import CommentAction
 app = Flask(__name__)
 
 # 允许跨域访问
@@ -222,6 +223,26 @@ def recipe_detail(index):
     except Exception as e:
         return jsonify({"code": 500, "error": "recipe card query fail."})
 
+@app.route('/addComment', methods=["POST"])
+def addComment():
+    """添加用户评论
+    """
+    request_str = request.get_data()
+    request_dict = json.loads(request_str)
+
+    comment = Comment()
+    comment.userid = request_dict["userid"]
+    comment.content = request_dict["content"]
+
+    
+
+
+    # 添加注册用户
+    CommentAction().addComment(comment)
+    
+    return jsonify({"code": 500, "error": "recipe card query fail."})
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=3010, threaded=True)
+    app.run(debug=True, host='0.0.0.0', port=3017, threaded=True)
+
+

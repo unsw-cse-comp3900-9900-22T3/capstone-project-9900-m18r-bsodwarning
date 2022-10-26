@@ -21,6 +21,10 @@ mongo_port = 27017
 material_db_name = "recipeinfo"
 material_table_name = "recipe_detail"
 
+#评论db name
+comment_db_name = "Commentinfo"
+comment_table_name = "Comment"
+
 # log数据，每天都会落一个盘，并由时间信息进行命名
 loginfo_db_name = "loginfo" # log数据库
 loginfo_table_name_prefix = "log" # log数据表的前缀

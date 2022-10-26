@@ -1,15 +1,16 @@
 import sys
 
 sys.path.append("../")
+from conf.dao_config import (comment_db_name, loginfo_db_name,
+                             material_db_name, user_info_db_name)
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from conf.dao_config import loginfo_db_name, user_info_db_name, material_db_name
 
 
 class MysqlServer(object):
     def __init__(self, username="root", passwd="comp9900", hostname="localhost", port="3306",
                  user_info_db_name=user_info_db_name, loginfo_db_name=loginfo_db_name,
-                 material_db_name=material_db_name):
+                 material_db_name=material_db_name, comment_db_name = comment_db_name):
         self.username = username
         self.passwd = passwd
         self.hostname = hostname
@@ -17,6 +18,7 @@ class MysqlServer(object):
         self.user_info_db_name = user_info_db_name
         self.loginfo_db_name = loginfo_db_name
         self.material_db_name = material_db_name
+        self.comment_db_name = comment_db_name
 
     def session(self, db_name):
         """链接数据库，绑定映射关系
@@ -113,3 +115,13 @@ class MysqlServer(object):
         """
         engine, _ = self.session(self.material_db_name)
         return engine
+    def get_comment_engine(self):
+        """获取评论详情的session
+        """
+        engine, _ = self.session(self.comment_db_name)
+        return engine
+    def get_comment_session(self):
+        """获取评论详情的session
+        """
+        _, session = self.session(self.comment_db_name)
+        return session
