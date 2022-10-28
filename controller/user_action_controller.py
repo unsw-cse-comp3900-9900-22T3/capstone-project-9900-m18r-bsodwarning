@@ -116,6 +116,24 @@ class UserAction():
             return False
         return True
 
+    def get_subscribe_by_user_id(self, user):
+
+        try:
+            subscribed_ids = \
+                self.user_subscribe_sql_session.query(UserSubscribe.subscribed_id).filter(
+                    UserSubscribe.userid == user.email).all()
+            follow = \
+                self.register_user_sql_session.query(RegisterUser.avatar, RegisterUser.username,
+                                                     RegisterUser.email).filter(UserSubscribe.userid == user.email).all()
+            follower_count = \
+                self.user_subscribe_sql_session.query(UserSubscribe).filter(UserSubscribe.subscribed_id == user.email).count()
+            follow_count = \
+                self.user_subscribe_sql_session.query(UserSubscribe).filter(UserSubscribe.userid == user.email).count()
+        except Exception as e:
+            print(str(e))
+            return None
+        return follow, follow_count, follower_count,subscribed_ids
+
     def save_one_action(self, action):
         if isinstance(action, UserLikes):
             try:

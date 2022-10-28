@@ -28,6 +28,15 @@ class RecipeAction():
             return None
         return recipe_detail
 
+    # def get_subscribe_by_subscribed_ids(self,subscribed_ids):
+    #     RecipeList = \
+    #         self.recipe_detail_sql_session.query(Recipe.index, Recipe.author).filter(
+    #             Recipe.author.in_(subscribed_ids)).all()
+    #     return RecipeList
+    # def get_post_count_by_author(self,recipe):
+    #     post_count = \
+    #         self.recipe_detail_sql_session.query(Recipe).filter(Recipe.author == recipe.author).count()
+    #     return post_count
 
 username = 'root'
 hostname = mysql_hostname

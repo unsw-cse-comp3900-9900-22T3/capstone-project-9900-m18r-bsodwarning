@@ -64,7 +64,7 @@ def login():
     user = RegisterUser()
     user.email = request_dict["email"]
     user.password = request_dict["password"]
-
+    a = request_dict.get("description",'')
     # 查询数据库中的用户名或者密码是否存在
     try:
         result = UserAction().user_is_exist(user, "login")
@@ -74,9 +74,9 @@ def login():
             return jsonify({"code": 200, "msg": "login success","avatar":detail.avatar})
         elif result == 2:
             # 密码错误
-            return jsonify({"code": 501, "error": "password is error"})
+            return jsonify({"code": 501, "error": "password error"})
         else:
-            return jsonify({"code": 502, "error": "this email is not exist!"})
+            return jsonify({"code": 502, "error": "this email does not exist!"})
     except Exception as e:
         return jsonify({"code": 500, "error": "login fail."})
 
@@ -158,7 +158,7 @@ def recipe_card(index):
         return jsonify({"code": 500, "error": "recipe card query fail."})
 
 
-@app.route('/recipe/detail/<index>', methods=["GET"])
+@app.route('/recipe/details/<index>', methods=["GET"])
 def recipe_detail(index):
     """菜谱详情页
     """
@@ -216,11 +216,144 @@ def recipe_detail(index):
                             "trans_fatty_acid_g": recipe_detail.trans_fatty_acid_g,
                             "omega_3_fatty_acid_g": recipe_detail.omega_3_fatty_acid_g,
                             "omega_6_fatty_acid_g": recipe_detail.omega_6_fatty_acid_g,
-                            "instructions_list": eval(recipe_detail.instructions_list),
+                            "instructions_list": eval(recipe_detail.instructions_list) if recipe_detail.instructions_list else '',
                             "cover": recipe_detail.image
                         }})
     except Exception as e:
         return jsonify({"code": 500, "error": "recipe card query fail."})
+
+@app.route('/recipe/create/', methods=["POST"])
+def create_recipe():
+    """Create/Contribute the recipe from user to the system
+    """
+    request_str = request.get_data()
+    request_dict = json.loads(request_str)
+
+    recipe = Recipe()
+
+    max_index = RecipeAction().get_the_max_index()
+    ##Generate the id based on the current maximum number of database in case duplicate index occur
+    max_index+=1
+
+    recipe.index = max_index
+    recipe.title = request_dict.get("name", '')
+    recipe.category = ','.join(request_dict["tags"])
+    recipe.author = request_dict.get("email", '')
+    recipe.description = request_dict.get("description", '')
+    recipe.rating = request_dict.get("rating", '')
+
+    ##Currently, undefined in the frontend
+    recipe.rating_count = request_dict.get("rating_count", '')
+    recipe.review_count = request_dict.get("review_count", '')
+    recipe.directions = request_dict.get("directions", '')
+    recipe.prep_time = request_dict.get("prep_time", '')
+    recipe.cook_time = request_dict.get("cook_time", '')
+    recipe.total_time = request_dict.get("total_time", '')
+    recipe.yields = request_dict.get("yields", '')
+    recipe.calories = request_dict.get("calories", '')
+    recipe.directions = request_dict.get("directions", '')
+
+    recipe.image = request_dict.get("cover", '')
+
+    ingredient_pair = request_dict.get("ingredient", '')
+    if ingredient_pair:
+        ingredient_list = ['{} {}'.format(pair['amount'],pair['ingredient']) for pair in ingredient_pair]
+        ingredient_str = ';'.join(ingredient_list)
+        recipe.ingredients = ingredient_str
+    else:
+        recipe.ingredients = ''
+
+    step_pair = request_dict.get("Step", '')
+    if step_pair:
+        cover_list = ['{}'.format(pair['cover']) for pair in step_pair]
+        descript_list = ['{}'.format(pair['description']) for pair in step_pair]
+        cover_str = ' '.join(cover_list)
+        descript_str = ' '.join(descript_list)
+
+        recipe.step_images = cover_str if cover_str else ''
+        recipe.instructions_list = descript_str if descript_str else ''
+    else:
+        recipe.step_images = ''
+        recipe.instructions_list = ''
+
+    save_recipe = RecipeAction().save_recipe(recipe)
+
+    if not save_recipe:
+        return jsonify({"code": 500,
+                    "error": "Fail to save recipe!"})
+
+    return jsonify({"code": 200,
+                    "msg": "Create recipe successfully."})
+
+@app.route('/recipe/edit/<Recipe_ID>', methods=["POST"])
+def edit_recipe(Recipe_ID):
+    """Edit the Info of Recipe by its own user
+    """
+    request_str = request.get_data()
+    request_dict = json.loads(request_str)
+
+    recipe_dict = {}
+
+    recipe_dict["index"] = Recipe_ID
+    recipe_dict["title"] = request_dict.get("name", '')
+    recipe_dict["category"] = ','.join(request_dict["tags"])
+    recipe_dict["author"] = request_dict.get("email", '')
+    recipe_dict["description"] = request_dict.get("description", '')
+    recipe_dict["rating"] = request_dict.get("rating", '')
+
+    ##Currently, undefined in the frontend
+    recipe_dict["rating_count"] = request_dict.get("rating_count", '')
+    recipe_dict["review_count"] = request_dict.get("review_count", '')
+    recipe_dict["directions"] = request_dict.get("directions", '')
+    recipe_dict["prep_time"] = request_dict.get("prep_time", '')
+    recipe_dict["cook_time"] = request_dict.get("cook_time", '')
+    recipe_dict["total_time"] = request_dict.get("total_time", '')
+    recipe_dict["yields"] = request_dict.get("yields", '')
+    recipe_dict["calories"] = request_dict.get("calories", '')
+    recipe_dict["directions"] = request_dict.get("directions", '')
+
+    recipe_dict["image"] = request_dict.get("cover", '')
+
+    ingredient_pair = request_dict.get("ingredient", '')
+    if ingredient_pair:
+        ingredient_list = ['{} {}'.format(pair['amount'],pair['ingredient']) for pair in ingredient_pair]
+        ingredient_str = ';'.join(ingredient_list)
+        recipe_dict["ingredients"] = ingredient_str
+    else:
+        recipe_dict["ingredients"] = ''
+
+    step_pair = request_dict.get("Step", '')
+    if step_pair:
+        cover_list = ['{}'.format(pair['cover']) for pair in step_pair]
+        descript_list = ['{}'.format(pair['description']) for pair in step_pair]
+        cover_str = ' '.join(cover_list)
+        descript_str = ' '.join(descript_list)
+
+        recipe_dict["step_images"] = cover_str if cover_str else ''
+        recipe_dict["instructions_list"] = descript_str if descript_str else ''
+    else:
+        recipe_dict["step_images"] = ''
+        recipe_dict["instructions_list"] = ''
+
+    try:
+        updated_reciped = RecipeAction().edit_recipe(Recipe_ID, recipe_dict)
+    except Exception as e:
+        return jsonify({"code": 501, "error": "invalid email/RecipeId"})
+    if not updated_reciped:
+        return jsonify({"code": 500, "error": "invalid email/RecipeId."})
+
+    return jsonify({"code": 200, "msg": "Recipe info updated."})
+
+@app.route('/delete/recipe/<Recipe_ID>', methods=["POST"])
+def delete_recipe(Recipe_ID):
+    """Delete the recipe
+    """
+    del_recipe = RecipeAction().del_recipe_by_user(Recipe_ID)
+    if not del_recipe:
+        return jsonify({"code": 500, "error":"invalid email/RecipeId"})
+
+    return jsonify({"code": 200, "msg":"you have deleted this recipe"})
+
 
 
 if __name__ == '__main__':

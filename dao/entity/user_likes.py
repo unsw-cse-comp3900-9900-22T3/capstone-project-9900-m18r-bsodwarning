@@ -15,7 +15,7 @@ class UserLikes(Base):
     index = Column(Integer(), primary_key=True,autoincrement=True)
     userid = Column(BigInteger())
     username = Column(String(30))
-    newid = Column(String(100))
+    recipeid = Column(String(100))
     curtime =  Column(DateTime(timezone=True), server_default=func.now())
 
     def __init__(self):
