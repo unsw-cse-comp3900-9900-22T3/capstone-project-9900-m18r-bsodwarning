@@ -231,16 +231,66 @@ def addComment():
     request_dict = json.loads(request_str)
 
     comment = Comment()
-    comment.userid = request_dict["userid"]
+    comment.userid = request_dict["email"]
     comment.content = request_dict["content"]
-
-    
-
+    comment.recipeid = request_dict["recipeid"]
 
     # 添加注册用户
-    CommentAction().addComment(comment)
+    try:
+        temp_comment_id = CommentAction().addComment(comment)
+        return jsonify({"code": 200, "msg": "add success.","commentid":temp_comment_id})
+    except Exception as e:
+        return jsonify({"code": 500, "error": "add failed."})
     
-    return jsonify({"code": 500, "error": "recipe card query fail."})
+    
+    return jsonify({"code": 200, "error": "query add success."})
+@app.route('/getCommentByRecipeid', methods=["POST"])
+def getCommentByRecipeid():
+    """获取菜谱评论
+    """
+    request_str = request.get_data()
+    request_dict = json.loads(request_str)
+
+    
+    recipeid = request_dict["recipeid"]
+
+    # 获取菜谱评论
+    try:
+        comment_list = CommentAction().getCommentByRecipeid(recipeid)
+        result_list = []
+        for row in comment_list:
+            result_list.append({
+                    'commentid':row.commentid,
+                    'userid': row.userid,
+                    'content': row.content,
+                    'createtime': row.curtime
+                    })
+        # print(result_list)
+        # return jsonify(result_list)
+        return jsonify({"code": 200, "msg": "all info got.","result_list":result_list})
+    except Exception as e:
+        return jsonify({"code": 500, "error": "delete failed."})
+    
+
+
+@app.route('/deleteCommentById', methods=["POST"])
+def deleteCommentById():
+    """删除用户评论
+    """
+    request_str = request.get_data()
+    request_dict = json.loads(request_str)
+
+    commentid = request_dict["commentid"]
+    
+    # 删除菜谱评论
+    try:
+        CommentAction().deleteCommentByCommentid(commentid)
+        return jsonify({"code": 200, "msg": "delete success."})
+    except Exception as e:
+        return jsonify({"code": 500, "error": "delete failed."})
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=3017, threaded=True)
