@@ -1,0 +1,27 @@
+week1
+I joined the team and choose our project - meal recommendation system. Then we create a jira platfrom for project management.
+
+Week2
+We discussed the user interface and had the brainstorming, I proposed to add calorie counting function and new user registration information collection for further recommendation to our system.
+
+week3
+I used Axure to draw the prototype of new user registration information collection page(welcome page), Profile page, Homepage, and favorite page.
+Moreover, I reviewed other teammates prototype, integrated all pages, and fixed logic errors in our team's prototype drawing.
+
+week4
+I writed the additional 2 functions' description except the functions in the project requirements in the proposal.
+
+week5
+We did the proposal summary, prepared and did the presetation.
+
+week6
+Assigned the task of front-end and back-end code, my task is to complete the back-end code for allergy food additions, deletions and user subscription searchin, additions, and deletions. We then also discussed the details of the tasks that needed to be returned to the front end for the interface standard
+
+week7
+Finish my task of back-end code for allergy food additions, deletions and user subscription searchin, additions, and deletions. Then test them with our front-end teammate to make sure our system can run well,
+
+week8
+Continued system interface interfacing with front-end teammates.
+
+week9
+week10
