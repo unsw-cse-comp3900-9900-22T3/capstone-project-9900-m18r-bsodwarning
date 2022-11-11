@@ -1,0 +1,27 @@
+week1
+Discussed the proj we are interested in. Create jira and github group.
+
+week2
+Designed some page of our system. writing proposal
+
+week3
+frontend code: 1.Home page 2. Login/Signin 3. Welcome 4.Recipe Detail 5.Recipe Card 6.User profile
+complete function:1.Login/Signin 2.Home Page 3.Display detail of recipe 4.edit profile
+
+week4
+prepare for demo 1. Start connect frontend with backend and exchange message. Implements the function of Login in , sign in, Home page display...
+
+week5
+frontend code: 1.Recipe edit 2.Subscribe Page 3.Recipe Edit 4.Recipe create
+
+week6
+complete function: 1.leave comment 2.like and favorite 3.subscribe/unsubscribe 4.create/Delete recipe 5.edit recipe
+
+week7
+complete function: 2.submit welcome page 3.add/delete tag in preference and avoid food 4.display subscribe page 9.Reset password
+
+week8
+frontend code: 1.Search Page 2.rewrite header 3.rewrite part of user profile 
+
+week9
+complete function: 1.search by title/recipename/image 2.sort recipe card
