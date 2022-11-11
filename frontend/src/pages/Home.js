@@ -1,15 +1,7 @@
 import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
+import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
-import SearchIcon from '@mui/icons-material/Search';
-import Tooltip from '@mui/material/Tooltip';
-import IconButton from '@mui/material/IconButton';
-import Avatar from '@mui/material/Avatar';
-import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import RecipeCard from '../components/RecipeCard';
 import { Grid, Button, ButtonGroup } from '@mui/material';
@@ -22,120 +14,12 @@ import Grow from '@mui/material/Grow';
 import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import MenuList from '@mui/material/MenuList';
-
-const Header = () => {
-  const navigate = useNavigate();
-  const Search = styled('div')(({ theme }) => ({
-    position: 'relative',
-
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    '&:hover': {
-      backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginLeft: 0,
-    marginRight:'2em',
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(1),
-      width: 'auto',
-    },
-  }));
-  
-  const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 1),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }));
-  
-  const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: 'inherit',
-    '& .MuiInputBase-input': {
-      padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
-      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-      transition: theme.transitions.create('width'),
-      width: '100%',
-      [theme.breakpoints.up('sm')]: {
-        width: '18ch',
-        '&:focus': {
-          width: '30ch',
-        },
-      },
-    },
-  }));
-
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
-  return(
-    <Box sx={{ flexGrow: 1, position: 'fixed', left:0, right:0, top:0, zIndex:1 }}>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-          >
-            Taste studio
-          </Typography>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder= 'search'
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
-          
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-            <MenuItem onClick={() => handleCloseUserMenu}>
-              <Typography textAlign="center" onClick={()=>{navigate('Login')}}>{'Log in'}</Typography>
-            </MenuItem>
-            <MenuItem onClick={() => handleCloseUserMenu}>
-              <Typography textAlign="center" onClick={()=>{navigate('Signup')}}>{'Sign in'}</Typography>
-            </MenuItem>
-            </Menu>
-          </Box>
-        </Toolbar>
-      </AppBar>
-    </Box>
-  );
-}
+import SpeedDial from '@mui/material/SpeedDial';
+import SpeedDialIcon from '@mui/material/SpeedDialIcon';
+import SpeedDialAction from '@mui/material/SpeedDialAction';
+import AddIcon from '@mui/icons-material/Add';
+import { callApi } from '../components/FunctionCollect';
+import Header from '../components/Header';
 
 const Advertisement = () => {
   const wdt = document.documentElement.clientWidth * 0.4 + 'px';
@@ -155,7 +39,7 @@ const Advertisement = () => {
   return(
     <Box style={this_style}>
       <StyledImg
-      src='https://source.unsplash.com/random'
+      src='https://www.allrecipes.com/thmb/VwULr05JFDluPI78PyLSZ8wrFgY=/2000x2000/smart/filters:no_upscale()/4511555-dessert-crepes-Buckwheat-Queen-1x1-1-90b5c7ed132f47728b8a2fdc1c984dd0.jpg'
       alt='nothing'
       />
       <StyledBox display="flex" justifyContent="center" alignItems="center">
@@ -168,16 +52,14 @@ const Advertisement = () => {
 }
 
 const RecipeDisplay = () => {
-  const cardlist = [1,2,3,4,5,6,7,8,9,10,11,12]
-
-  // const GetCardList = async () => {
-  //   const response = await fetch(('/path'), {
-  //     method:'GET',
-  //     header:{
-  //       'Content-type': 'application/json'
-  //     }
-  //   })
-  // }
+  const [cardId, setCardId] = React.useState([])
+  React.useEffect(() => {
+    callApi('/home', 'GET')
+      .then(data => {
+        setCardId(data.RecipeId)
+      })
+      .catch(err => {console.log(err)})
+  },[])
   const guide = {
     'Day Time':['Breakfast', 'Lunch', 'Dinner', 'Snacks'],
     'Diet':['Low Carb Recipes', 'Vegatarian Dishes', 'Vegan Dishes'],
@@ -185,14 +67,12 @@ const RecipeDisplay = () => {
     'International':['Asian', 'Chinese', 'French', 'Japanese', 'Indian', 'Italian', 'Spanish'],
     'Occation':['Easy', 'Quick', 'Kids', 'Party', 'Summer', 'Winter'],
     'Baking': ['Bread', 'Cookies', 'cake'],
-    'Drink':['Juice', 'Smoothies', 'Tea', 'Cocktails'],
-    "More":[]
+    'Drink':['Juice', 'Smoothies', 'Tea', 'Cocktails']
   }
   const GuideBar = ({props}) => {
     const options = guide[`${props}`]
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef(null);
-
     const handleClick = (option) => {
       console.info(`You clicked ${option}`);
     };
@@ -280,7 +160,7 @@ const RecipeDisplay = () => {
           ))
           }
         </Grid>
-        {cardlist.map((info, index) => (
+        {cardId.map((info, index) => (
           <Grid item sm={6} md={4} lg={3} key={index}>
             <RecipeCard info={info}/>
           </Grid>
@@ -311,6 +191,30 @@ const BottomInfo = () => {
   );
 }
 
+const BottomTool = () => {
+  const actions = [
+    { icon: <AddIcon />, name: 'create' }
+  ];
+  const navigate = useNavigate()
+  return (
+    <Box sx={{ height: 320, transform: 'translateZ(0px)', flexGrow: 1, position: 'fixed', right:0, bottom:0, zIndex:1 }}>
+      <SpeedDial
+        ariaLabel="SpeedDial basic example"
+        sx={{ position: 'fixed', bottom: 16, right: 16 }}
+        icon={<SpeedDialIcon />}
+      >
+        {localStorage.getItem('email') && actions.map((action) => (
+          <SpeedDialAction
+            key={action.name}
+            icon={action.icon}
+            tooltipTitle={action.name}
+            onClick={()=>navigate('/recipecreate')}
+          />
+        ))}
+      </SpeedDial>
+    </Box>
+  );
+}
 export default function Home() {
   function Copyright() {
     return (
@@ -331,21 +235,22 @@ export default function Home() {
   <Advertisement/>
   <RecipeDisplay />
   <BottomInfo />
+  <BottomTool/>
   {/* Footer */}
   <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          color="text.secondary"
-          component="p"
-        >
-          Something here to give the footer a purpose!
-        </Typography>
-        <Copyright />
-      </Box>
-      {/* End footer */}
+    <Typography variant="h6" align="center" gutterBottom>
+      Footer
+    </Typography>
+    <Typography
+      variant="subtitle1"
+      align="center"
+      color="text.secondary"
+      component="p"
+    >
+      Something here to give the footer a purpose!
+    </Typography>
+    <Copyright />
+  </Box>
+  {/* End footer */}
   </>
 }

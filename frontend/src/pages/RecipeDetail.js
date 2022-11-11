@@ -13,9 +13,9 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-import { Button, ButtonGroup, Chip, Grid, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+import { Button, ButtonGroup, Grid, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
 import Paper from '@mui/material/Paper';
-import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
+// import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import { Stack } from '@mui/system';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
@@ -26,10 +26,19 @@ import PropTypes from 'prop-types';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import TextField from '@mui/material/TextField';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import EditIcon from '@mui/icons-material/Edit';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import RecipeCard from '../components/RecipeCard';
+import { callApi } from '../components/FunctionCollect';
+import { DeleteForever } from '@mui/icons-material';
+import LunchDiningIcon from '@mui/icons-material/LunchDining';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
+import ExploreIcon from '@mui/icons-material/Explore';
+import { useSnackbar } from "notistack";
 
 const Header = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  const { enqueueSnackbar } = useSnackbar();
   const Search = styled('div')(({ theme }) => ({
     position: 'relative',
 
@@ -83,7 +92,16 @@ const Header = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
+  const [email, setEmail] = React.useState('')
+  const avatar = localStorage.getItem('avatar')
+  React.useEffect(() => {
+    setEmail(localStorage.getItem('email'))
+  },[])
+  const handleSearch = (event) => {
+    event.preventDefault()
+    const data = new FormData(event.currentTarget);
+    navigate(`/search/${data.get('searchInfo')}`)
+  }
   return(
     <Box sx={{ flexGrow: 1, position: 'fixed', left:0, right:0, top:0, zIndex:1 }}>
       <AppBar position="static">
@@ -97,20 +115,32 @@ const Header = () => {
           >
             Taste studio
           </Typography>
-          <Search component='form'>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder= 'search'
-              inputProps={{ 'aria-label': 'search' }}
-            />
+          {email &&
+          <IconButton onClick={e => navigate('/subscribe')}>
+            <ExploreIcon/>
+          </IconButton>}
+          <Search>
+            <Box  component='form' onSubmit={handleSearch}>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder= 'search'
+                inputProps={{ 'aria-label': 'search' }}
+                name='searchInfo'
+              />
+              <IconButton>
+                <PhotoCameraIcon/>
+              </IconButton>
+            </Box>
           </Search>
-          
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                {avatar
+                ?<Avatar alt="UserName" src={avatar}/>
+                :<Avatar>U</Avatar>
+                }
               </IconButton>
             </Tooltip>
             <Menu
@@ -129,12 +159,23 @@ const Header = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-            <MenuItem onClick={() => handleCloseUserMenu}>
-              <Typography textAlign="center" onClick={()=>{navigate('/Login')}}>Log in</Typography>
+            {email === ''
+            ?<MenuItem onClick={() => handleCloseUserMenu}>
+              <Typography textAlign="center" onClick={()=>{navigate('/Login')}}>{'log in'}</Typography>
             </MenuItem>
-            <MenuItem onClick={() => handleCloseUserMenu}>
-              <Typography textAlign="center" onClick={()=>{navigate('/Signup')}}>Sign in</Typography>
+            :<MenuItem onClick={() => handleCloseUserMenu}>
+              <Typography textAlign="center" onClick={()=>{navigate(`/profile/${localStorage.getItem('email')}`)}}>{'Profile'}</Typography>
             </MenuItem>
+            }
+            {email === ''
+            ?<MenuItem onClick={() => handleCloseUserMenu}>
+              <Typography textAlign="center" onClick={()=>{navigate('/Signup')}}>{'Sign in'}</Typography>
+            </MenuItem>
+            :<MenuItem onClick={() => handleCloseUserMenu}>
+              <Typography textAlign="center" onClick={()=>{localStorage.setItem('email', ''); setEmail(''); enqueueSnackbar('You have logged out')}}>{'log out'}</Typography>
+            </MenuItem>
+            }
+            
             </Menu>
           </Box>
         </Toolbar>
@@ -144,40 +185,60 @@ const Header = () => {
 }
 
 const RecipeContent = ( {info} ) => {
-  const [LikeState, setLike] = React.useState([false,123])
+  const [allInfo, setAllInfo] = React.useState('')
+  React.useEffect(() => {
+    const email = localStorage.getItem('email')
+    callApi(`/recipe/details/${info}/${email ? email : '0'}`, 'GET')
+      .then(data=>{
+        console.log(data)
+        setAllInfo(data.detail)
+      })
+      .catch(err => {console.log(err)})
+  },[info])
   const handleLike = () => {
-    LikeState[0]
-    ? setLike([!LikeState[0],LikeState[1]-1])
-    : setLike([!LikeState[0],LikeState[1]+1])
+    callApi(allInfo['likeState'] ? '/user_cancel_like' :`/user_like`, 'POST', {"user_email":localStorage.getItem('email'),"recipeid":info})
+      .then(data => {
+        console.log(data)
+        var newData = JSON.parse(JSON.stringify(allInfo));
+        if(newData.likeState){
+          newData.likeCount = newData.likeCount - 1
+        }else {
+          newData.likeCount = newData.likeCount + 1
+        }
+        newData.likeState = !newData.likeState
+        
+        setAllInfo(newData)
+      })
+      .catch(err => console.log(err))
   }
-  const [SubcribState, setSubcrib] = React.useState(false)
   const handleSubcrib = () => {
-    setSubcrib(!SubcribState)
+    const email = localStorage.getItem('email')
+    callApi(`${allInfo.subscribeState ? '/user_cancel_subscribe' : '/user_subscribe'}`, 'POST',{"user_email":email,"subscribed_email":allInfo.author})
+      .then(data => {
+        console.log(data)
+        var newData = JSON.parse(JSON.stringify(allInfo));
+        newData.subscribeState = !newData.subscribeState
+        setAllInfo(newData)
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
   const [value, setValue] = React.useState(0)
   const handleChange = (event, newValue) => {
     setValue(newValue);
   }
-  const [markState, setMark] = React.useState(false)
+  // const [markState, setMark] = React.useState(allInfo['CollectionState'] ? allInfo['CollectionState'] : false)
   const handleMark = () => {
-    setMark(!markState)
+    callApi(allInfo['CollectionState'] ? '/user_cancel_collection' :`/user_collection`, 'POST', {"user_email":localStorage.getItem('email'),"recipeid":info})
+      .then(data => {
+        console.log(data)
+        var newData = JSON.parse(JSON.stringify(allInfo));
+        newData.CollectionState = !newData.CollectionState
+        setAllInfo(newData)
+      })
+      .catch(err => console.log(err))
   }
-  const tags = ['beef', 'tomato', 'sauce', 'tomato', 'sauce', 'sauce', 'tomato', 'sauce', 'tomato', 'sauce', 'tomato', 'sauce']
-  const Ingredients = [
-    {'name':'xxx spoon', 'type': 'Ingredients1', 'calories': '100'},
-    {'name':'xxx gram', 'type': 'Ingredients2', 'calories': '120'}
-  ]
-  function sum(arr) {
-    var s = 0;
-    for (var i=arr.length-1; i>=0; i--){
-      s += Number(arr[i].calories)
-    }
-    return s;
-  } 
-  const RecipeStep = [
-    {'img':'https://source.unsplash.com/random', 'Description':' this is Description of step 1'},
-    {'img':'https://source.unsplash.com/random', 'Description':' this is Description of step 2'}
-  ]
   const Tittleimg= styled('img')(({theme})=>({
     width:'685px',
     height:'378px',
@@ -218,50 +279,77 @@ const RecipeContent = ( {info} ) => {
       'aria-controls': `simple-tabpanel-${index}`,
     };
   }
-  const Recommendation = [
-    {'img':'https://source.unsplash.com/random', 'Description':' this is Description of Recommendation 1'},
-    {'img':'https://source.unsplash.com/random', 'Description':' this is Description of Recommendation 2'}
-  ]
-  const [comments,setComment] = React.useState([
-    {'user':'laurance', 'comment':'I like this'},
-    {'user':'Bian shengtao', 'comment':'not bad'},
-  ])
   const handleSubmit = (e) => {
-    const newComment = [...comments,{'user':'me', 'comment': e.target.value}]
-    if (e.keyCode === 13){
-      setComment(newComment)
+    if(e.keyCode===13){
+      const email = localStorage.getItem('email')
+      const avatar = localStorage.getItem('avatar')
+      callApi(`/addcomment`, 'POST', {email ,"content":e.target.value,'recipeid':info})
+        .then(data => {
+          console.log(data)
+          var newData = JSON.parse(JSON.stringify(allInfo));
+          newData.comment = [...newData.comment, {avatar, 'userid': email, 'content': e.target.value}]
+          setAllInfo(newData)
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
+  }
+  const navigate = useNavigate()
+  const handleDelete = () => {
+    callApi(`/delete/recipe/${info}`, 'POST', {'email':localStorage.getItem('email')})
+      .then(data => {
+        console.log(data)
+        navigate(`/profile/${localStorage.getItem('email')}`)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+  const handleDelComment = (commentid) => {
+    callApi('/deleteCommentById', 'POST', {commentid})
+      .then(data => {
+        console.log(data)
+        var newData = JSON.parse(JSON.stringify(allInfo));
+        newData.comment = (newData.comment).filter(item => item.commentid !== commentid)
+        setAllInfo(newData)
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
   return(
     <Box display="flex" justifyContent="center" alignItems="center" sx={{ marginTop:'64px', width:'100%'}}>
       <Grid container width='700px' marginTop={12}>
         {/* image */}
-        <Grid item xs={12}>
-          <Tittleimg src='https://source.unsplash.com/random' alt='123' sx={{objectFit:'cover'}}/>
-        </Grid>
+        {allInfo.cover &&
+          <Grid item xs={12}>
+            <Tittleimg src={allInfo.cover} alt='123' sx={{objectFit:'cover'}}/>
+          </Grid>
+        }
         {/* Tittle */}
         <Grid item xs={12} marginTop={5} display="flex" flexDirection='row' alignItems="center" justifyContent={'space-between'}>
           <Box>
-            <Typography fontSize={'2em'}>RECIPE NAME {`${info}`}</Typography>
-            <Typography>This is discription</Typography>
+            <Typography fontSize={'2em'}>{allInfo.title ? allInfo.title :`Dessert Crepes${info}`}</Typography>
+            <Typography>{allInfo.description ? allInfo.description : 'There is no description'}</Typography>
           </Box>
-          <Button startIcon={LikeState[0]?<ThumbUpAltIcon/>:<ThumbUpOffAltIcon/>} onClick={handleLike}>{`${LikeState[1]}`}</Button>
+          {(allInfo.author !== localStorage.getItem('email')) && <Button startIcon={allInfo['likeState']?<ThumbUpAltIcon/>:<ThumbUpOffAltIcon/>} onClick={handleLike}>{`${allInfo['likeCount']}`}</Button>}
         </Grid>
         {/* avatar and subcrib */}
         <Grid item xs={12} marginTop={3} display="flex" flexDirection='row' alignItems="center" justifyContent={'space-between'}>
           <Box display="flex" flexDirection='row' alignItems="center">
             <Avatar src='https://source.unsplash.com/random' alt='123'/>
-            <Typography fontSize={'1em'} margin='0 20px'>Contributor</Typography>
+            <Typography fontSize={'1em'} margin='0 20px'>{allInfo.author ? allInfo.author: 'uploader'}</Typography>
           </Box>
-          <Button variant="outlined" onClick={handleSubcrib}>{SubcribState? 'unsubscrib':`subcrib`}</Button>
+          {(allInfo.author !== localStorage.getItem('email')) && <Button variant="outlined" onClick={handleSubcrib}>{allInfo.subscribeState? 'unsubscribe':`subcribe`}</Button>}
         </Grid>
         {/* tags */}
         <Grid item xs={12} marginTop={5}>
           <Typography fontSize={'2em'}>TAGS</Typography>
           <Box display={'flex'} flexWrap={'wrap'}>
-            {tags.map((info, key) => (
+            {/* {allInfo.category && (allInfo.category).map((info, key) => (
               <Chip  color="primary" label={`#${info}`} clickable key={key} sx={{ margin:'10px'}}/>
-            ))}
+            ))} */}
           </Box>
         </Grid>
         {/* ingredients */}
@@ -270,16 +358,15 @@ const RecipeContent = ( {info} ) => {
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650, border:0 }} aria-label="simple table">
               <TableBody>
-                {Ingredients.map((info, key)=>(
+                {allInfo.ingredients && (allInfo.ingredients).map((info, key)=>(
                   <TableRow
                     key={key}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
                     <TableCell component="th" scope="row">
-                      {info.name}
                     </TableCell>
-                    <TableCell align="center">{info.type}</TableCell>
-                    <TableCell align="right">{`${info.calories} calories`}</TableCell>
+                    <TableCell align="center">{info.amount + info.ingredient}</TableCell>
+                    <TableCell align="right">{}</TableCell>
                   </TableRow>
                 ))}
                 <TableRow
@@ -288,10 +375,10 @@ const RecipeContent = ( {info} ) => {
                     <TableCell component="th" scope="row">
                       {'Total Calories'}
                     </TableCell>
-                    <TableCell align="center">{`${sum(Ingredients)} calories`}</TableCell>
-                    <TableCell align="right">
-                      <SentimentVeryDissatisfiedIcon/>
-                      {`Exceeded your target calories`}
+                    <TableCell align="center">{allInfo.calories ? allInfo.calories :`unknown`}{'  kcal'}</TableCell>
+                    <TableCell align="right" sx={{width:'33%'}}>
+                      <LunchDiningIcon/>
+                      {/* {`Exceeded your target calories`} */}
                     </TableCell>
                   </TableRow>
               </TableBody>
@@ -299,20 +386,23 @@ const RecipeContent = ( {info} ) => {
           </TableContainer>
         </Grid>
         {/* step */}
-        <Grid item xs={12} marginTop={5}>
+        { allInfo.instructions_list && 
+          <Grid item xs={12} marginTop={5}>
           <Typography fontSize={'2em'} sx={{marginBottom:'16px'}}>Recipe Step</Typography>
           <Stack spacing={2}>
-            {RecipeStep.map((info,key) => (
+            {(allInfo.instructions_list).map((info, key) => (
               <Box key={key}>
-                <Typography fontSize={'1.2em'}>STEP {key+1}/{RecipeStep.length}</Typography>
-                <Box display={'flex'} flexDirection='row'>
-                  <StepImg src={`${info.img}`} alt={'123'} sx={{objectFit:'cover'}}/>
-                  <Typography sx={{paddingLeft:'1em'}}>{info.Description}</Typography>
-                </Box>
+              <Typography fontSize={'1.2em'}>STEP {key+1}/{(allInfo.instructions_list).length}</Typography>
+              <Box display={'flex'} flexDirection='row'>
+                {(allInfo.stepImage_list && (allInfo.stepImage_list[key] !=="http://localhost:3000/upload_Holder.png"))
+                && <StepImg src={`${allInfo.stepImage_list[key]}`} alt={'123'} sx={{objectFit:'cover'}}/>}
+                <Typography sx={{paddingLeft:'1em'}}>{info}</Typography>
               </Box>
+            </Box>
             ))}
           </Stack>
         </Grid>
+        }
         {/* comment & recommendation */}
         <Grid item xs={12} marginTop={5}>
           <Box sx={{width:'100%'}}>
@@ -324,22 +414,27 @@ const RecipeContent = ( {info} ) => {
             </Box>
             {/* recommendation */}
             <TabPanel value={value} index={0}>
-              <Stack>
-              {Recommendation.map((info, key) => (
-                <Box key={key} marginTop={'20px'}>
+              <Grid container spacing={2} width={'100%'}>
+              {allInfo && (allInfo.recommendation).map((info, key) => (
+                <Grid item xs={4}key={key}>
                   <Box display={'flex'} flexDirection='row'>
-                    <StepImg src={`${info.img}`} alt={'123'} sx={{objectFit:'cover'}}/>
-                    <Typography sx={{paddingLeft:'1em'}}>{info.Description}</Typography>
+                    <RecipeCard info={info}/>
+                    {/* <Typography sx={{paddingLeft:'1em'}}>{info.Description}</Typography> */}
                   </Box>
-                </Box>
+                </Grid>
               ))}
-              </Stack>
+              </Grid>
             </TabPanel>
+            {/* comment */}
             <TabPanel value={value} index={1}>
-              {comments.map((info,key) => (
-                <Box key={key} display='flex' flexDirection={'row'} alignContent='center' marginTop={1}>
-                  <AccountCircle sx={{ color: 'action.active' }} />
-                  <Typography key={key}>:{info.comment}</Typography>
+              {allInfo && (allInfo.comment).map((info,key) => (
+                <Box key={key} display='flex' flexDirection={'row'} alignContent='center' marginTop={1} sx={{width:'100%', justifyContent:'space-between'}}>
+                  <Box display='flex' flexDirection={'row'} alignContent='center' marginTop={1}>
+                    <Avatar src={info.avatar} sx={{ width: 24, height: 24 }}/>
+                    <Typography>{info.userid}</Typography>
+                    <Typography key={key}>:{info.content}</Typography>
+                  </Box>
+                  {(localStorage.getItem('email')===info.userid) && <Button onClick={e => handleDelComment(info.commentid)}>DELETE</Button> }
                 </Box>
               ))}
               <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
@@ -350,10 +445,18 @@ const RecipeContent = ( {info} ) => {
           </Box>
         </Grid>
       </Grid>
-      <ButtonGroup sx={{position:'fixed', right:'1em', bottom:'1em'}} orientation="vertical">
-        <Button startIcon={LikeState[0]?<ThumbUpAltIcon/>:<ThumbUpOffAltIcon/>} onClick={handleLike}/>
-        <Button startIcon={markState?<FavoriteIcon/>:<FavoriteBorderIcon/>} onClick={handleMark}/>
-      </ButtonGroup>
+      {/* right bottom button group */}
+      {(allInfo.author !== localStorage.getItem('email'))
+        ?
+        <ButtonGroup sx={{position:'fixed', right:'1em', bottom:'1em'}} orientation="vertical">
+          <Tooltip title='like'><Button startIcon={allInfo['likeState']?<ThumbUpAltIcon/>:<ThumbUpOffAltIcon/>} onClick={handleLike}/></Tooltip>
+          <Tooltip title='favorite'><Button startIcon={allInfo.CollectionState ?<FavoriteIcon/>:<FavoriteBorderIcon/>} onClick={handleMark}/></Tooltip>
+        </ButtonGroup>
+        :<ButtonGroup sx={{position:'fixed', right:'1em', bottom:'1em'}} orientation="vertical">
+          <Tooltip title='edit'><Button startIcon={<EditIcon/>} onClick={() => navigate(`/recipeEdit/${info}`)}/></Tooltip>
+          <Tooltip title='delete'><Button startIcon={<DeleteForever/>} onClick={handleDelete}/></Tooltip>
+        </ButtonGroup>
+        }
     </Box>
   );
 }

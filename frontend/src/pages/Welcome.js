@@ -13,8 +13,11 @@ import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Chip, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+// import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { useNavigate } from 'react-router-dom';
+import BasicModal from '../components/InputModal';
+import { callApi } from '../components/FunctionCollect';
+
 
 function Copyright() {
   return (
@@ -48,14 +51,11 @@ export default function Welcome () {
     }
   }
   const [activeStep, setActiveStep] = React.useState(0);
-
-  const handleNext = () => {
-    setActiveStep(activeStep + 1);
-  };
-
   const handleBack = () => {
     setActiveStep(activeStep - 1);
   };
+  const [username, SetName] = React.useState('')
+  const [age, SetAge] = React.useState('')
   const [gender, setGender] = React.useState('');
   const [level, setLevel] = React.useState('');
   const [spend, setSpend] = React.useState('');
@@ -65,8 +65,12 @@ export default function Welcome () {
       setGender(event.target.value);
     }else if(prop === 'level'){
       setLevel(event.target.value)
-    }else{
+    }else if(prop === 'spend'){
       setSpend(event.target.value)
+    }else if(prop === 'name'){
+      SetName(event.target.value)
+    }else if(prop === 'age'){
+      SetAge(event.target.value)
     }
   };
   function Welcome1() {
@@ -74,14 +78,16 @@ export default function Welcome () {
     return(
       <Grid container spacing={5}>
         <Grid item xs={12}>
-            <TextField
-              required
-              id="Name"
-              name="Name"
-              label="How to call you?"
-              variant="standard"
-              fullWidth
-            />
+          <TextField
+            required
+            id="Name"
+            name="Name"
+            label="How to call you?"
+            variant="standard"
+            defaultValue={username}
+            fullWidth
+            onBlur={handleChange('name')}
+          />
         </Grid>
         <Grid item xs={6}>
           <TextField
@@ -91,6 +97,8 @@ export default function Welcome () {
             label="age"
             fullWidth
             variant="standard"
+            defaultValue={age}
+            onBlur={handleChange('age')}
           />
         </Grid>
         <Grid item xs={6}>
@@ -141,11 +149,11 @@ export default function Welcome () {
       </Grid>
     )
   }
-  const preferTags = [
+  const [preferTags, setAllTags] = React.useState([
     'Meat', 'Seafood', 'Low calories', 
     'Soup', 'Noodles', 'Dessert', 'Chinese Food', 
     'Thailand Food', 'Japanese Food'
-  ]
+  ])
   const [prefered, setPrefered] = React.useState([])
   const handlePrefer = (prop) => (event) => {
     if(prefered.find(v => v===prop)){
@@ -158,6 +166,14 @@ export default function Welcome () {
   }
   }
   function Welcome2() {
+    const addTag = (info) => {
+      if(preferTags.includes(info)){
+        console.log(`${info} have already in Tags`)
+      }else{
+        const newTags = [...preferTags, info]
+        setAllTags(newTags)
+      }
+    }
     return(
       <Grid container>
         <Grid item xs={12} display='flex' justifyContent={'center'}>
@@ -174,16 +190,16 @@ export default function Welcome () {
               onClick={handlePrefer(tag)}
             />
           ))}
-          <Chip color="primary" label="New" clickable sx={{ margin:'10px', marginTop:'20px'}} avatar={<AddCircleIcon color='primary'/>}/>
+          <BasicModal onABC={addTag} info={'add'}/>
         </Grid>
       </Grid>
     )
   }
-  const avoidTag = [
+  const [avoidTag,setAllAvoid] = React.useState([
     'Meat', 'Seafood', 'Low calories', 
     'Soup', 'Noodles', 'Dessert', 'Chinese Food', 
     'Thailand Food', 'Japanese Food'
-  ]
+  ])
   const [avoid, setAvoid] = React.useState([])
   const handleAvoid = (prop) => (event) => {
     if(avoid.find(v => v===prop)){
@@ -196,6 +212,14 @@ export default function Welcome () {
   }
   }
   function Welcome3() {
+    const addTag = (info) => {
+      if(avoidTag.includes(info)){
+        console.log(`${info} have already in Tags`)
+      }else{
+        const newTags = [...avoidTag, info]
+        setAllAvoid(newTags)
+      }
+    }
     return(
       <Grid container>
         <Grid item xs={12} display='flex' justifyContent={'center'}>
@@ -212,11 +236,35 @@ export default function Welcome () {
               onClick={handleAvoid(tag)}
             />
           ))}
-          <Chip color="primary" label="New" clickable sx={{ margin:'10px', marginTop:'20px'}} avatar={<AddCircleIcon color='primary'/>}/>
+          <BasicModal onABC={addTag} info={'add'}/>
         </Grid>
       </Grid>
     )
   }
+  const handleNext = () => {
+    if(activeStep === 2){
+      const info = {
+        username,
+        age,
+        email:localStorage.getItem('email'),
+        gender,
+        level,
+        'time':spend,
+        'preference':prefered,
+        'allergies':avoid
+      }
+      console.log(info)
+      callApi('/profile/alter', 'POST', info)
+        .then(data => {
+          console.log(data)
+          navigate('/')
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+    setActiveStep(activeStep + 1);
+  };
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -278,13 +326,10 @@ export default function Welcome () {
                       Back
                     </Button>
                   )}
-                  <Button
-                    variant="contained"
-                    onClick={handleNext}
-                    sx={{ mt: 3, ml: 1 }}
-                  >
-                    {activeStep === steps.length - 1 ? 'Submit' : 'Next'}
-                  </Button>
+                  
+                  {activeStep === steps.length - 1
+                  ? <Button variant="contained" onClick={handleNext} sx={{ mt: 3, ml: 1 }} >Submit</Button>
+                  : <Button variant="contained" onClick={handleNext} sx={{ mt: 3, ml: 1 }} >Next</Button>}
                 </Box>
               </React.Fragment>
             )}

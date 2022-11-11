@@ -10,20 +10,41 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { CardActionArea, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { callApi } from './FunctionCollect';
+import Skeleton from '@mui/material/Skeleton';
 
 export default function RecipeCard( {info} ) {
+  const [cardInfo, setCard] = React.useState('')
+  React.useEffect(()=>{
+    callApi(`/recipe/card/${info}`, 'GET')
+      .then(data => {
+        setCard(data)
+      })
+  },[info])
   const StyledMedia = styled(CardMedia)(({theme}) => ({
     height:'30vmin',
     minHeight:'20em',
     objectFit:'cover'
   }));
-  const [heartCdt, setheart] = React.useState(false)
-  const [thumbCdt, setthumb] = React.useState(false)
   const hadleLike = () => {
-    setheart(!heartCdt)
+    callApi(cardInfo['iscollected'] ? '/user_cancel_collection' :`/user_collection`, 'POST', {"user_email":localStorage.getItem('email'),"recipeid":info})
+      .then(data => {
+        console.log(data)
+        var newData = JSON.parse(JSON.stringify(cardInfo));
+        newData['iscollected'] = !newData['iscollected']
+        setCard(newData)
+      })
+      .catch(err => console.log(err))
   }
   const handleThumb = () => {
-    setthumb(!thumbCdt)
+    callApi(cardInfo['isliked']?'/user_cancel_like' : `/user_like`, 'POST', {"user_email":localStorage.getItem('email'),"recipeid":info})
+      .then(data => {
+        console.log(data)
+        var newData = JSON.parse(JSON.stringify(cardInfo));
+        newData['isliked'] = !newData['isliked']
+        setCard(newData)
+      })
+      .catch(err => console.log(err))
   }
 
   const navigate = useNavigate();
@@ -32,23 +53,27 @@ export default function RecipeCard( {info} ) {
       sx={{ display: 'flex', flexDirection: 'column', position: 'relative' }}
     >
       <CardActionArea onClick={() => {navigate(`/RecipeDetail/${info}`)}}>
-        <StyledMedia
-          component="img"
-          image="https://source.unsplash.com/random"
-          alt="random"
-        />
+        {cardInfo.cover
+          ?<StyledMedia
+            component="img"
+            image={cardInfo.cover?cardInfo.cover :'/upload_Holder.png'}
+            alt="not found"
+          />
+          : <Skeleton height='30vmin'/>
+        }
+        
         </CardActionArea>
         <CardActions>
           <Box sx={{display:'flex', justifyContent:'space-between', width:'100%'}}>
-            <Typography marginLeft={'10px'}>Tittle</Typography>
+            {cardInfo ? <Typography marginLeft={'10px'}>{cardInfo.tittle}</Typography> : <Skeleton width={'60%'}/>}
             <Box>
               <Button
-                startIcon={heartCdt? <FavoriteIcon/>:<FavoriteBorderIcon/>}
+                startIcon={cardInfo['iscollected']? <FavoriteIcon/>:<FavoriteBorderIcon/>}
                 size="small"
                 onClick={hadleLike}
               />
               <Button
-                startIcon={thumbCdt? <ThumbUpIcon/>:<ThumbUpOffAltIcon/>}
+                startIcon={cardInfo['isliked']? <ThumbUpIcon/>:<ThumbUpOffAltIcon/>}
                 size="small"
                 onClick={handleThumb}
               />

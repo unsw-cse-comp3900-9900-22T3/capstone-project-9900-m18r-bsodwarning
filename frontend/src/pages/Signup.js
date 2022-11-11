@@ -12,6 +12,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, IconButton,  } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import { callApi } from '../components/FunctionCollect';
+import { useSnackbar } from 'notistack';
 
 function Copyright(props) {
   return (
@@ -52,9 +54,9 @@ const Header = () => {
 }
 
 export default function SignUp() {
-
+  const navigate = useNavigate()
+  const {enqueueSnackbar} = useSnackbar()
   const handleSubmit = async (event) => {
-    const HostName = '42.192.146.124:3010'
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
@@ -64,24 +66,18 @@ export default function SignUp() {
     });
     const email = data.get('email')
     const password = data.get('password')
-    const name = data.get('name')
-    const response = await fetch(`http://${HostName}/register`, {
-      method:'POST',
-      header:{
-        'Content-type': 'application/json'
-      },
-      body:JSON.stringify({
-        name,
-        email,
-        password
-      })
+    const username = data.get('name')
+    callApi(`/register`, 'POST', {username,email,password})
+    .then(data => {
+      console.log(data)
+      localStorage.setItem('email',email)
+      navigate('/welcome')
+      enqueueSnackbar('Sign up Succeed', { variant:'success'})
     })
-    const info = await response.json()
-    if(info.error){
-      console.log(info.error)
-    } else {
-      console.log(info)
-    }
+    .catch(err => {
+      console.log(err)
+      enqueueSnackbar(err)
+    })
   };
   return (
     <ThemeProvider theme={theme}>

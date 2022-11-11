@@ -2,17 +2,18 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
+// import FormControlLabel from '@mui/material/FormControlLabel';
+// import Checkbox from '@mui/material/Checkbox';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useSnackbar } from 'notistack';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, IconButton,  } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import { callApi } from '../components/FunctionCollect';
+import { useSnackbar } from "notistack";
 
 function Copyright(props) {
   return (
@@ -53,33 +54,25 @@ const Header = () => {
 }
 
 export default function Login() {
+  const navigate = useNavigate()
   const { enqueueSnackbar } = useSnackbar();
-  const HostName = '42.192.146.124:3010'
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
     const email = data.get('email')
     const password = data.get('password')
-    const response = await fetch(`http://${HostName}/login`, {
-      method:'POST',
-      header:{
-        'Content-type': 'application/json'
-      },
-      body:JSON.stringify({
-        email,
-        password
+    callApi(`/login`, 'POST', {email,password})
+      .then(data => {
+        console.log(data)
+        localStorage.setItem('email',email)
+        localStorage.setItem('avatar',data.avatar)
+        enqueueSnackbar('Login Succeed', { variant:'success'})
+        navigate('/')
       })
-    })
-    const info = await response.json()
-    if(info.error){
-      console.log(info.error)
-    } else {
-      enqueueSnackbar('This is a success message!', 'success');
-    }
+      .catch(err => {
+        console.log(err)
+        enqueueSnackbar(err)
+      })
   };
 
   return (
@@ -119,10 +112,10 @@ export default function Login() {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
+            {/* <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
-            />
+            /> */}
             <Button
               type="submit"
               fullWidth
