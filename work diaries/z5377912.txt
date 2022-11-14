@@ -24,4 +24,7 @@ week8
 Continued system interface interfacing with front-end teammates.
 
 week9
+Test all the functions in our system and try different scenarios, make sure that all our sprints have been completed. 
+
 week10
+Keep testing and fix the bugs in our system. Write the report. Submit all the code and write the user document（Readme）.
