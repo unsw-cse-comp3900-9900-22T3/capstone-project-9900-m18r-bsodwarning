@@ -13,4 +13,19 @@ Week4
 This week we are prepared to progressive demo in wk5, and I created the sprint 1 in Jira to check it has done and mark as done. Then I separate the work in presentation and also present the user story and recipe. Not only this, on the aspect of technical aspect, I created sql of recipe and help Shengtao Bian write the scrapy python program to extract more detailed information of recipe.
 
 Week5
-This week we have discussed the retrospective about what went well and what not and I am responsible to write what went well, what not and to try. Also, we have launched and separate the task in the sprint2. I am assigned the task to implement the recipe contribute, delete, edit in backend.
+We prepared the demo together and I took the user stories and the detail of recipe part. This week we have discussed the retrospective about what went well and what not and I am responsible to write what went well, what not and to try. Also, we have launched and separate the task in the sprint2. I am assigned the task to implement the recipe contribute, delete, edit in backend.
+
+Week6
+This week we write the retrospective and declare the problem we met and to try. We have separate the work of the backend and I am responsible for implementing the contribute, edit and delete the recipe. This has been done by flask, postman mocking the frontend, python and navicat of sql debugging.
+
+Week7
+I have finished the part of implementation and make a unit test with each part, then make frontend and backend joint debugging with the frontend developer. 
+
+Week8
+We prepared the demo together and I took the part of recommendation. I try to fix the bug of image transmission from frontend to backend designed as base64 converter and store the image in path. But this strategy is discard in the final version.
+
+Week9
+We discussed the retrospective together and I was responsible for thing to try and review from the previous one. And I help write some part of my teammate in demo and train it. All the member have 4 meetings in this week and last almost 6 hours per day to make unit test and debugging.
+
+Week10
+I am responsible for writing the report of functionalities mapping to objectives and implement challenge and all the format. And help improve the part of software quality like make more readable.
