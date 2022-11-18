@@ -1,1 +1,30 @@
+Week1
+We formed the group and created Jira environment and repository. After meeting and discussion, we chose the topic - meal recommendation system. The google drive and Wechat group are created for communication and project proposal.
 
+Week2
+We have decided the user interface based on the functional requirements. I designed the prototype of log-in pages, registration pages and personal profile pages.
+
+Week3
+I contributed to the project proposal. 
+1. Problem Overview 2. Existing systems and issues 3.Sprints 4.The priority of each user story
+
+Week4
+This week we focused on the progressive demo. And work with teammates to improve the frontend pages design.
+
+Week5
+We prepared the demo together and I took the registration part and login part. In the weekly meeting, we discussed the retrospective and I wrote the meeting details and things to improve in the next sprint. According to the sprint2, I am assigned the task to implement comment function in backend.
+
+Week6
+I contributed to the retrospective and implemented functional requirements related to comments in backend.
+
+Week7
+Complete the part of implementation and make the unit tes.t We made frontend and backend joint debugging during the weekly meeting.
+
+Week8
+Prepare the demo together. I took the part of registration and login function.
+
+Week9
+In the weekly meeting, we discussed the retrospective and I wrote the content of what went well and what did not go well. We had 4 meetings in week9 to make unit test and debugging.
+
+Week10
+I focused on the report of  System Architecture, Page Structure and Third-party functionalities.
