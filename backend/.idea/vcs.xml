@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/model/simcse_recipe_ingredients" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/model/simcse_recipe_title" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/recipe" vcs="Git" />
+  </component>
+</project>

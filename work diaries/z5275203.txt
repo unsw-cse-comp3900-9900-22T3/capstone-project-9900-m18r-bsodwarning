@@ -1,0 +1,29 @@
+Week1
+I discuss with the teammate about the project requirement, and I create the Jira repository.
+
+Week2
+Based on the technology selection corresponding to the entire project process, the knowledge skeleton is initially realized, and the requirements analysis is done with the team members to determine which functions of the project.
+
+Week3
+Gather 30,000 recipe databases by scrapy of python, made a system structure diagram in the proposal, and created a cloud server.
+
+Week4
+Build the project skeleton, write the project master table, build the database of users and recipes, establish the basic functions of the project, and front-end joint debugging.
+
+Week5
+Built a framework for adding, deleting, and modifying functions of recipes, participated in retrospective meetings, built milvus, and further modified the type of database.
+
+Week6
+Use word2vec to make the back-end recommendation under the recipe details page, and merge to summarize the branch functions written by other students and modify them.
+
+Week7
+Implemented ingredient search function, and front-end joint debugging
+
+Week8
+Train the simcse model, upgrade the recommendation function, iteratively improve the recommendation effect, and use the clip model of cnn for the image search function created
+
+Week9
+Front-end and back-end joint debugging, modify model details, test
+
+Week10
+Write the report to hand over the specific content of the back-end implementation, organize the code and package it.
