@@ -10,11 +10,13 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { CardActionArea, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { callApi } from './FunctionCollect';
+import { useSnackbar } from "notistack";
 import Skeleton from '@mui/material/Skeleton';
 
 export default function RecipeCard( {info} ) {
   const [cardInfo, setCard] = React.useState()
   const email = localStorage.getItem('email')
+  const { enqueueSnackbar } = useSnackbar();
   React.useEffect(()=>{
     callApi(`/recipe/card/${info}/${email ? email : '0'}`, 'GET')
       .then(data => {
@@ -29,7 +31,9 @@ export default function RecipeCard( {info} ) {
   }));
   // like => favorite
   const hadleLike = () => {
-    callApi(cardInfo['iscollected'] ? '/user_cancel_collection' :`/user_collection`, 'POST', {"user_email":localStorage.getItem('email'),"recipeid":info})
+    const email = localStorage.getItem('email') ? localStorage.getItem('email') : undefined
+    if(email){
+      callApi(cardInfo['iscollected'] ? '/user_cancel_collection' :`/user_collection`, 'POST', {"user_email":localStorage.getItem('email'),"recipeid":info})
       .then(data => {
         console.log(data)
         var newData = JSON.parse(JSON.stringify(cardInfo));
@@ -42,10 +46,16 @@ export default function RecipeCard( {info} ) {
         setCard(newData)
       })
       .catch(err => console.log(err))
+    }else{
+      enqueueSnackbar('Please Login')
+    }
+    
   }
   // Thumb => like
   const handleThumb = () => {
-    callApi(cardInfo['isliked']?'/user_cancel_like' : `/user_like`, 'POST', {"user_email":localStorage.getItem('email'),"recipeid":info})
+    const email = localStorage.getItem('email') ? localStorage.getItem('email') : undefined
+    if(email){
+      callApi(cardInfo['isliked']?'/user_cancel_like' : `/user_like`, 'POST', {"user_email":localStorage.getItem('email'),"recipeid":info})
       .then(data => {
         console.log(data)
         var newData = JSON.parse(JSON.stringify(cardInfo));
@@ -59,6 +69,10 @@ export default function RecipeCard( {info} ) {
         setCard(newData)
       })
       .catch(err => console.log(err))
+    }else{
+      enqueueSnackbar('Please Login')
+    }
+    
   }
 
   const navigate = useNavigate();

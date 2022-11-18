@@ -24,9 +24,11 @@ import RecipeCard from '../components/RecipeCard';
 import { callApi } from '../components/FunctionCollect';
 import { DeleteForever } from '@mui/icons-material';
 // import LunchDiningIcon from '@mui/icons-material/LunchDining';
+import { useSnackbar } from "notistack";
 import Header from '../components/Header';
 
 const RecipeContent = ( {info} ) => {
+  const { enqueueSnackbar } = useSnackbar();
   const [allInfo, setAllInfo] = React.useState('')
   React.useEffect(() => {
     const email = localStorage.getItem('email')
@@ -38,7 +40,9 @@ const RecipeContent = ( {info} ) => {
       .catch(err => {console.log(err)})
   },[info, allInfo])
   const handleLike = () => {
-    callApi(allInfo['likeState'] ? '/user_cancel_like' :`/user_like`, 'POST', {"user_email":localStorage.getItem('email'),"recipeid":info})
+    const email = localStorage.getItem('email') ? localStorage.getItem('email') : undefined
+    if(email){
+      callApi(allInfo['likeState'] ? '/user_cancel_like' :`/user_like`, 'POST', {"user_email":localStorage.getItem('email'),"recipeid":info})
       .then(data => {
         console.log(data)
         var newData = JSON.parse(JSON.stringify(allInfo));
@@ -52,10 +56,15 @@ const RecipeContent = ( {info} ) => {
         setAllInfo(newData)
       })
       .catch(err => console.log(err))
+    }else{
+      enqueueSnackbar('Please Login')
+    }
+    
   }
   const handleSubcrib = () => {
-    const email = localStorage.getItem('email')
-    callApi(`${allInfo.subscribeState ? '/user_cancel_subscribe' : '/user_subscribe'}`, 'POST',{"user_email":email,"subscribed_email":allInfo.author})
+    const email = localStorage.getItem('email') ? localStorage.getItem('email') : undefined
+    if(email){
+      callApi(`${allInfo.subscribeState ? '/user_cancel_subscribe' : '/user_subscribe'}`, 'POST',{"user_email":email,"subscribed_email":allInfo.author})
       .then(data => {
         console.log(data)
         var newData = JSON.parse(JSON.stringify(allInfo));
@@ -65,6 +74,10 @@ const RecipeContent = ( {info} ) => {
       .catch(err => {
         console.log(err)
       })
+    }else{
+      enqueueSnackbar('Please Login')
+    }
+    
   }
   const [value, setValue] = React.useState(0)
   const handleChange = (event, newValue) => {
@@ -72,7 +85,9 @@ const RecipeContent = ( {info} ) => {
   }
   // const [markState, setMark] = React.useState(allInfo['CollectionState'] ? allInfo['CollectionState'] : false)
   const handleMark = () => {
-    callApi(allInfo['CollectionState'] ? '/user_cancel_collection' :`/user_collection`, 'POST', {"user_email":localStorage.getItem('email'),"recipeid":info})
+    const email = localStorage.getItem('email') ? localStorage.getItem('email') : undefined
+    if(email){
+      callApi(allInfo['CollectionState'] ? '/user_cancel_collection' :`/user_collection`, 'POST', {"user_email":localStorage.getItem('email'),"recipeid":info})
       .then(data => {
         console.log(data)
         var newData = JSON.parse(JSON.stringify(allInfo));
@@ -80,6 +95,10 @@ const RecipeContent = ( {info} ) => {
         setAllInfo(newData)
       })
       .catch(err => console.log(err))
+    }else{
+      enqueueSnackbar('Please Login')
+    }
+    
   }
   const Tittleimg= styled('img')(({theme})=>({
     width:'685px',
@@ -123,18 +142,22 @@ const RecipeContent = ( {info} ) => {
   }
   const handleSubmit = (e) => {
     if(e.keyCode===13){
-      const email = localStorage.getItem('email')
-      const avatar = localStorage.getItem('avatar')
-      callApi(`/addcomment`, 'POST', {email ,"content":e.target.value,'recipeid':info})
-        .then(data => {
-          console.log(data)
-          var newData = JSON.parse(JSON.stringify(allInfo));
-          newData.comment = [...newData.comment, {avatar, 'userid': email, 'content': e.target.value, 'commentid':data.commentid}]
-          setAllInfo(newData)
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      const email = localStorage.getItem('email') ? localStorage.getItem('email') : undefined
+      if(email){
+        const avatar = localStorage.getItem('avatar')
+        callApi(`/addcomment`, 'POST', {email ,"content":e.target.value,'recipeid':info})
+          .then(data => {
+            console.log(data)
+            var newData = JSON.parse(JSON.stringify(allInfo));
+            newData.comment = [...newData.comment, {avatar, 'userid': email, 'content': e.target.value, 'commentid':data.commentid}]
+            setAllInfo(newData)
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      }else{
+        enqueueSnackbar('Please Login')
+      }
     }
   }
   const navigate = useNavigate()
