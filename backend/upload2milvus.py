@@ -1,3 +1,8 @@
+import clip
+from PIL import Image
+import requests
+from io import BytesIO
+import pandas as pd
 from pymilvus import (
     connections,
     utility,
@@ -6,7 +11,6 @@ from pymilvus import (
     DataType,
     Collection,
 )
-import pandas as pd
 import torch
 from transformers import AutoModel, AutoTokenizer, RobertaPreTrainedModel
 from datasets import Dataset
@@ -17,7 +21,6 @@ import random
 import numpy as np
 from itertools import chain
 from conf.dao_config import *
-
 
 recipes = pd.read_csv("recipe/recipe.csv")
 
@@ -119,29 +122,7 @@ hello_milvus.create_index(
     index_params=index_params
 )
 
-import clip
-from PIL import Image
-import requests
-from io import BytesIO
-import pandas as pd
-from pymilvus import (
-    connections,
-    utility,
-    FieldSchema,
-    CollectionSchema,
-    DataType,
-    Collection,
-)
-import pandas as pd
-import torch
-from transformers import AutoModel, AutoTokenizer, RobertaPreTrainedModel
-from datasets import Dataset
-from torch.utils.data import DataLoader
-from tqdm import tqdm
-from sklearn.preprocessing import normalize
-import random
-import numpy as np
-from itertools import chain
+
 
 model, preprocess = clip.load("ViT-B/32")
 

@@ -41,4 +41,4 @@ python upload2mysql.py
 python upload2milvus.py
 python server.py
 ```
-
+Note that uploading the data and converting it to vector will take some time

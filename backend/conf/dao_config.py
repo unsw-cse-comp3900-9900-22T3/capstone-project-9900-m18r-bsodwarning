@@ -14,7 +14,7 @@ comment_table_name = "Comment"
 # default configuration
 mysql_username = "root"
 mysql_passwd = "vMVUwaFri5KRqlUU"
-mysql_hostname = "120.55.40.153"
+mysql_hostname = "127.0.0.1"
 mysql_port = "11013"
 
 
@@ -25,7 +25,7 @@ material_table_name = "recipe_detail"
 
 
 # Milvus
-MILVUS_HOST = "120.55.40.153"
+MILVUS_HOST = "127.0.0.1"
 MILVUS_PORT = "19530"
 collection_name = "COMP9900"
 index_type = "IVF_FLAT"
