@@ -24,20 +24,11 @@ const StyledImg = styled('img')(({theme}) => ({
   borderRadius:'10px'
 }))
 
-const RecipeContent = ({info_ID}) => {
-  const [allInfo, setAllInfo] = React.useState('')
-  React.useEffect(() => {
-    const email = localStorage.getItem('email')
-    callApi(`/recipe/details/${info_ID}/${email ? email: '0'}`, 'GET')
-      .then(data=>{
-        console.log(data)
-        setAllInfo(data.detail)
-      })
-      .catch(err => {console.log(err)})
-  },[info_ID])
+const RecipeContent = ( ) => {
   // Submit
   const handleSubmit = (event) => {
     event.preventDefault();
+    const NoDisplayImgSrc = `http://${window.location.hostname}:${window.location.port}/upload_Holder.png`
     const data = new FormData(event.currentTarget)
     const ingredient = data.getAll('ingredient')
     const amount = data.getAll('amount')
@@ -54,15 +45,20 @@ const RecipeContent = ({info_ID}) => {
     for(var i=0; i>=0; i++){
       if(document.getElementById(`StepIMG${i}`)){
         const v = document.getElementById(`StepIMG${i}`).src
-        thisIMG[i] = {cover:v, description:StepDes[i]}
+        if(v===NoDisplayImgSrc){
+          thisIMG[i] = {cover:'', description:StepDes[i]}
+        }else {
+          thisIMG[i] = {cover:v, description:StepDes[i]}
+        }
       }else{
         break
       }
     }
+    const cover = (document.getElementById('coverIMG').src === NoDisplayImgSrc) ? '' : document.getElementById('coverIMG').src
     const info = {
       email: localStorage.getItem('email'),
       name:data.get('name'),
-      cover:document.getElementById('coverIMG').src,
+      cover,
       description:data.get('discription'),
       ingredient: ingredients,
       Step:thisIMG,
@@ -70,19 +66,19 @@ const RecipeContent = ({info_ID}) => {
       calories
     }
     console.log(info)
-    callApi(`/recipe/edit/${info_ID}`, 'POST', info)
+    callApi('/recipe/create', 'POST', info)
       .then(data => {
         console.log(data)
-        navigate('/')
+        navigate(`/profile/${localStorage.getItem('email')}`)
       })
       .catch(err => console.log(err))
   }
   // first party
   function BasicPart() {
-    const [coverImg, setCover] = React.useState(allInfo.cover ? allInfo.cover : '') // Basic part, cover of the Recipe
+    const [coverImg, setCover] = React.useState('') // Basic part, cover of the Recipe
     //triger of file input
     const handleEdit = () => {
-      document.getElementById('fileD').click()
+      document.getElementById('Coverfile').click()
     }
     // view of selected img
     const handleBrowse = (e) => {
@@ -93,20 +89,13 @@ const RecipeContent = ({info_ID}) => {
       }, false)
       reader.readAsDataURL(data)
     }
-    const displayTag = (info) => {
-      var output = info.join(',')
-      // info.map((info, index) => (
-      //   output = output + ',' +info
-      // ))
-      return output
-    }
     return(
       <Grid item xs={12}>
         <Typography fontSize={'3em'}>Basics</Typography>
         <Stack sx={{ margin:'64px 10% 0 10%'}} spacing={2}>
           {/* name */}
           <Typography>NAME YOUR RECIPE</Typography>
-          <TextField margin="normal" required autoFocus id='name' name='name' defaultValue={allInfo && allInfo.title}/>
+          <TextField margin="normal" required autoFocus id='name' name='name' />
           {/* photo */}
           <Typography>ADD PHOTO</Typography>
           <Box display={'flex'} flexDirection='row' alignItems={'center'} justifyContent='space-between'>
@@ -116,23 +105,23 @@ const RecipeContent = ({info_ID}) => {
                 <ModeEditIcon/>
               </IconButton>
               {/* hidden input */}
-              <StyledInput accept='image/jpeg' type={'file'} id="fileD" name="fileD" onChange={e => handleBrowse(e)}/>
+              <StyledInput accept='image/jpeg' type={'file'} id="Coverfile" name="Coverfile" onChange={e => handleBrowse(e)}/>
             </Box>
             <Typography align='center' sx={{margin:'20px'}}>Image must be original personal photos,in jpg format</Typography>
           </Box>
           {/* ADD DESCRIPTION */}
           <Typography>ADD DESCRIPTION</Typography>
-          <TextField margin="normal" required id='discription' name='discription' defaultValue={allInfo.description}/>
+          <TextField margin="normal" required autoFocus  id='discription' name='discription' />
           {/* Tag */}
           <Typography>ADD Tags</Typography>
-          <TextField margin="normal" id='tags' defaultValue={allInfo && displayTag(allInfo.category)} name='tags' label={'E.g. Breakfast, Main, Beverage, Chinese, European'}/>
+          <TextField margin="normal" required autoFocus  id='tags' name='tags' label={'E.g. Breakfast, Main, Beverage, Chinese, European'}/>
         </Stack>
       </Grid>
     )
   }
   // Second part
   function IngredientPart() {
-    const [ingredient, setIngredient] = React.useState(allInfo.ingredients)
+    const [ingredient, setIngredient] = React.useState([{amount:'', ingredient:''}])
     const handleAddIngredient = () => {
       setIngredient([...ingredient, {amount:'', ingredient:''}])
     }
@@ -181,7 +170,7 @@ const RecipeContent = ({info_ID}) => {
             <Typography width='40%'>INGREDIENT</Typography>
             <Typography width='40%'>AMOUNT</Typography>
           </Box>
-          {ingredient && ingredient.map((info,index) => (
+          {ingredient.map((info,index) => (
             <IngredientInfo key={index} props={{info, index}}/>
           ))}
           
@@ -203,22 +192,15 @@ const RecipeContent = ({info_ID}) => {
             <ControlPointIcon/>
             <Typography>ADD ONE MORE INGREDIENT</Typography>
           </Box>
-          <TextField margin="normal" required defaultValue={allInfo && allInfo.calories} id='calories' name='calories' label={'Total calories'} sx={{width:'40%'}}/>
+          <TextField margin="normal" id='calories' name='calories' label={'Total calories'} sx={{width:'40%'}}/>
         </Stack>
       </Grid>
     )
   }
+
+
   function RecipeStep() {
     const [step, setStep] = React.useState([{stepIMG:'',discription:''}])
-    React.useEffect(() => {
-      if(allInfo && allInfo.instructions_list){
-        var newStep = []
-        for(var i=0; i<(allInfo.instructions_list).length; i++){
-          newStep = [...newStep, {stepIMG:(allInfo.stepImage_list)[i],discription:(allInfo.instructions_list)[i]}]
-        }
-        setStep(newStep)
-      }
-    },[])
     const handleAddIngredient = () => {
       setStep([...step, {stepIMG:'',discription:''}])
     }
@@ -316,7 +298,7 @@ const RecipeContent = ({info_ID}) => {
         <Grid item xs={12}>
           <Box sx={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'center', margin:'20px 0'}}>
             <Button variant="contained" color='error' sx={{margin:'0 40px'}} onClick={() => navigate('/')}>
-              Give up
+              Delete
             </Button>
             <Button type="submit" variant="contained" sx={{margin:'0 40px'}}>
               submit
@@ -343,8 +325,8 @@ export default function CreatRecipe() {
     );
   }
   return(<>
-  <Header/>
-  <RecipeContent info_ID={param.id}/>
+  <Header Htype={1}/>
+  <RecipeContent info={param.id}/>
   {/* Footer */}
   <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
     <Typography variant="h6" align="center" gutterBottom>

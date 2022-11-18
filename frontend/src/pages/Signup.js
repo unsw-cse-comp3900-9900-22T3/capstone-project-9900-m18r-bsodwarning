@@ -3,16 +3,17 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { callApi } from '../components/FunctionCollect';
+import { useSnackbar } from 'notistack';
+import SimpleHeader from '../components/SimpleHeader';
+import { styled } from '@mui/material/styles';
 
 function Copyright(props) {
   return (
@@ -28,25 +29,57 @@ function Copyright(props) {
 }
 
 const theme = createTheme();
-
+const StyledButtonAlt = styled(Button)(({ theme }) => ({
+  color:'black',
+  backgroundColor:'#F6FEEA',
+  border:'1px solid black',
+  '&:hover': {
+    border:'1px solid #F6FEEA',
+    color:'black'
+  }
+}))
 export default function SignUp() {
-  const handleSubmit = (event) => {
+  const navigate = useNavigate()
+  const {enqueueSnackbar} = useSnackbar()
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
       email: data.get('email'),
       password: data.get('password'),
+      name: data.get('name'),
     });
+    const email = data.get('email')
+    const password = data.get('password')
+    const username = data.get('name')
+    var reg = /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/
+    var pwd = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/
+    if(!reg.test(email)){
+      enqueueSnackbar('Invalid email address')
+    }else if(!pwd.test(password)){
+      enqueueSnackbar('Invalid password')
+    }else{
+      callApi(`/register`, 'POST', {username,email,password})
+      .then(data => {
+        console.log(data)
+        localStorage.setItem('email',email)
+        navigate('/welcome')
+        enqueueSnackbar('Sign up Succeed', { variant:'success'})
+      })
+      .catch(err => {
+        console.log(err)
+        enqueueSnackbar(err)
+      })
+    }
   };
-
-  const navigate = useNavigate();
   return (
     <ThemeProvider theme={theme}>
+      <SimpleHeader Title='Sign up'/>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: '20vh',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -60,25 +93,15 @@ export default function SignUp() {
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
                   autoComplete="given-name"
-                  name="firstName"
+                  name="name"
                   required
                   fullWidth
-                  id="firstName"
-                  label="First Name"
+                  id="name"
+                  label="Name"
                   autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -100,26 +123,22 @@ export default function SignUp() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  helperText="At least 6 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 digit, and cannot contain special characters "
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
+                
               </Grid>
             </Grid>
-            <Button
+            <StyledButtonAlt
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
               Sign Up
-            </Button>
+            </StyledButtonAlt>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2" onClick={()=>navigate('/Login')}>
+                <Link href="#" variant="body2" to={'/Login'}>
                   Already have an account? Sign in
                 </Link>
               </Grid>

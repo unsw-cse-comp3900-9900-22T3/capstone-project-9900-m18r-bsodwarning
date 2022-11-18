@@ -2,15 +2,16 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { callApi } from '../components/FunctionCollect';
+import { useSnackbar } from "notistack";
+import SimpleHeader from '../components/SimpleHeader';
+import { styled } from '@mui/material/styles';
 
 function Copyright(props) {
   return (
@@ -28,23 +29,48 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function Login() {
-  const navigate = useNavigate();
-  const handleSubmit = (event) => {
+  const navigate = useNavigate()
+  const { enqueueSnackbar } = useSnackbar();
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const email = data.get('email')
+    const password = data.get('password')
+    var reg = /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/
+    if(!reg.test(email)){
+      enqueueSnackbar('Invalid email address')
+    }else{
+      callApi(`/login`, 'POST', {email,password})
+      .then(data => {
+        console.log(data)
+        localStorage.setItem('email',email)
+        localStorage.setItem('avatar',data.avatar)
+        enqueueSnackbar('Login Succeed', { variant:'success'})
+        navigate('/')
+      })
+      .catch(err => {
+        console.log(err)
+        enqueueSnackbar(err)
+      })
+    }
   };
-
+  const StyledButtonAlt = styled(Button)(({ theme }) => ({
+    color:'black',
+    backgroundColor:'#F6FEEA',
+    border:'1px solid black',
+    '&:hover': {
+      border:'1px solid #F6FEEA',
+      color:'black'
+    }
+  }))
   return (
     <ThemeProvider theme={theme}>
+      <SimpleHeader Title='Log in'/>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: '20vh',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -54,6 +80,7 @@ export default function Login() {
             Welcome to the taste studio
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          {/* <input type="text" title="email" required pattern="^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$" title="请输入正确的邮箱格式" /> */}
             <TextField
               margin="normal"
               required
@@ -74,29 +101,22 @@ export default function Login() {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
+            {/* <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
-            />
-            <Button
+            /> */}
+            <StyledButtonAlt
               type="submit"
               fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
-            </Button>
+              Log In
+            </StyledButtonAlt>
             <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
               <Grid item>
                 <Link
                   href="#"
                   variant="body2"
-                  onClick={()=>{navigate('/Signup')}}
+                  to={'/signup'}
                 >
                   {"Don't have an account? Sign Up"}
                 </Link>
