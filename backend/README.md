@@ -2,20 +2,14 @@
 
 ## before start backend
 
-### Mysql build
+### Mysql should be builded
 
-#### Mysql install from docker 
+#### Mysql should be installed from docker 
 
 ```shell
 docker pull mysql
 docker run --name mysql -p 11013:3306 -e MYSQL_ROOT_PASSWORD=vMVUwaFri5KRqlUU -d mysql
 ```
-
-### create database
-
-在mysql中创建三个数据库
-
-分别命名为`Commentinfo`,`recipeinfo`,`userinfo`
 
 ### Milvus install from docker
 
@@ -38,14 +32,13 @@ git lfs install
 git clone https://huggingface.co/datasets/Shengtao/recipe
 ```
 
-### start project
+### Activate the program
+
+Execute the following commands in turn:
 
 ```shell
+python upload2mysql.py
+python upload2milvus.py
 python server.py
 ```
 
-
-
-这时候mysql和milvus是空的
-
-需要将`upload2milvus.ipynb`和`upload2mysql.ipynb`的所有cell执行一遍。数据库中才会有数据。
