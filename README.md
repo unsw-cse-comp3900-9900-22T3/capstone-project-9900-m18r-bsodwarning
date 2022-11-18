@@ -1,8 +1,10 @@
 #  Meal Recommendation System
 
+You need to start the front-end and back-end respectively to start the project
+
 ## frontend 
 
-Please refer to `frontend/Readme-front.txt` for details
+Please refer to `frontend/read.md` for details
 
 ## backend
 
